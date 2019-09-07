@@ -3,7 +3,6 @@
     <div class="search">
       <div class="searchBor" @click="GoTohexiao">
         <i-icon type="search" size="20" />
-        <!-- <i-input autofocus placeholder="请输入核销码" /> -->
         <input type="text" placeholder="请输入核销码" />
         <div>核销</div>
       </div>
@@ -34,10 +33,9 @@
       </div>
       <div class="border1px"></div>
     </div>
-
     <img
       @click="NewPingTuan"
-      src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/新建拼团/xj_icon@2x.png"
+      src="https://mf-2019.oss-cn-shenzhen.aliyuncs.com/public/uploads/pink/20190906/5d72696d5c20b.png"
       class="NewJia"
       alt
     />
@@ -70,70 +68,15 @@
         </swiper>
       </view>
     </mp-dialog>
-    <!-- <van-dialog
-      use-slot
-      title="请选择模板"
-      :show="isShow"
-      show-cancel-button
-      confirm-button-open-type="getUserInfo"
-      @close="cancelIns"
-      @confirm="confirmIns"
-    >
-      <swiper :indicator-dots="indicatorDots" style="height:450px" @change="chang">
-        <swiper-item>
-          <canvas
-            class="asd"
-            canvas-id="myCanvas1"
-            @bindlongtap="canvasIdErrorCallback('myCanvas1')"
-          ></canvas>
-        </swiper-item>
-        <swiper-item>
-          <canvas
-            class="asd"
-            canvas-id="myCanvas2"
-            @bindlongtap="canvasIdErrorCallback('myCanvas2')"
-          ></canvas>
-        </swiper-item>
-        <swiper-item>
-          <canvas
-            class="asd"
-            canvas-id="myCanvas3"
-            @bindlongtap="canvasIdErrorCallback('myCanvas3')"
-          ></canvas>
-        </swiper-item>
-        <swiper-item>
-          <canvas
-            class="asd"
-            canvas-id="myCanvas4"
-            @bindlongtap="canvasIdErrorCallback('myCanvas4')"
-          ></canvas>
-        </swiper-item>
-        <swiper-item>
-          <canvas
-            class="asd"
-            canvas-id="myCanvas5"
-            @bindlongtap="canvasIdErrorCallback('myCanvas5')"
-          ></canvas>
-        </swiper-item>
-      </swiper>
-    </van-dialog>-->
-    <!--<button @click="save">下载图片</button>-->
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      pinkok: 0,
-      countpeople: 0,
-      countprice: 0,
-      pname: "",
-      pinks: NaN,
+      pinks: [],
       isShow: false,
       indicatorDots: true,
-      autoplay: false,
-      interval: 5000,
-      duration: 1000,
       productimg: "",
       erweima: "",
       pname: "",
@@ -145,8 +88,8 @@ export default {
   },
   onLoad() {
     var that = this;
-    this.isShow = false;
-    this.$axios
+    that.isShow = false;
+    that.$axios
       .post("routine/Store/pink_list", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
         that.pinks = response.data.data;
@@ -190,24 +133,14 @@ export default {
                   that.hebing("myCanvas3", "/static/images/33.jpg");
                   that.hebing("myCanvas4", "/static/images/44.jpg");
                   that.hebing("myCanvas5", "/static/images/55.jpg");
-                  // setTimeout(function() {
                   wx.hideLoading();
                   that.isShow = true;
-                  // }, 1000);
                 }
               });
             }
           });
         });
     },
-    // cancelIns(e) {
-    //   this.isShow = false;
-    // },
-    // confirmIns() {
-    //   var as = this.current + 1;
-    //   this.save(as);
-    //   this.isShow = false;
-    // },
     chang(e) {
       this.current = e.mp.detail.current;
     },
@@ -294,6 +227,11 @@ export default {
 </script>
 
 <style scoped>
+.posd {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
 .border1px {
   height: 2px !important;
   margin-bottom: 1px;
@@ -412,10 +350,10 @@ export default {
 .NewJia {
   width: 60px;
   height: 60px;
-  /* position: fixed; */
-  /* left: 50%; */
-  /* transform: translate(-50%); */
-  /* bottom: 51px; */
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%);
+  bottom: 51px;
   margin-bottom: 51px;
   margin: 0 auto;
   display: block;
@@ -426,9 +364,9 @@ export default {
   text-align: center;
   margin-bottom: 20px;
   display: block;
-  /* position: fixed; */
-  /* left: 50%; */
-  /* transform: translate(-50%); */
-  /* bottom: 20px; */
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%);
+  bottom: 20px;
 }
 </style>

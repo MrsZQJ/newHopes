@@ -1,5 +1,5 @@
 {
-    "navigationBarTitleText": "核销记录",
+    "navigationBarTitleText": "零钱明细",
     "usingComponents": {
       "i-icon": "../../../static/iview/icon/index"
     }

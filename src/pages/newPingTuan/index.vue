@@ -32,7 +32,7 @@
     </div>
     <div class="border1px"></div>
     <div class="border1px"></div>
-    <div class="imgJia" >
+    <div class="imgJia">
       <img
         class="addImg"
         @click="topimage"
@@ -53,10 +53,15 @@
         <img
           src="https://www.meifuyihao.com/public/uploads/images/图标/图标/xj_icon@2x.png"
           class="addImg"
-           @click="fuwuimage"
+          @click="fuwuimage"
         />
         <!-- <img class="imgfuwu" :src="fuwu" v-for="(fuwu,index) in fuwuimgList" :key="index" /> -->
-        <div class="asdf" v-for="(fuwu,index) in fuwuimgList" :key="index" @click="delrImgfuw(index)">
+        <div
+          class="asdf"
+          v-for="(fuwu,index) in fuwuimgList"
+          :key="index"
+          @click="delrImgfuw(index)"
+        >
           <img class="imgtop" :src="fuwu" />
           <span class="imhSpa">-</span>
         </div>
@@ -287,10 +292,10 @@ export default {
         }
       });
     },
-    delrImgTop(id){
+    delrImgTop(id) {
       this.topimgList.splice(id, 1);
     },
-    delrImgfuw(id){
+    delrImgfuw(id) {
       this.fuwuimgList.splice(id, 1);
     },
     publish() {

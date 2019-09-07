@@ -6,9 +6,11 @@
         <input type="number" placeholder="手机号码登录" v-model="phone" />
         <input type="password" placeholder="请输入密码" v-model="password" />
         <button @click="goToHome">登录</button>
-        <span @click="goToPassWord">忘记密码？</span>
+        <span @click="goToPassWord">忘记密码？</span><br>
+        
         <i-toast id="toast" />
       </div>
+      <a class="lianxi" href="tel:">联系我们</a>
     </div>
   </div>
 </template>
@@ -151,5 +153,17 @@ export default {
   margin-right: 70px;
   margin-top: 10px;
   float: right;
+}
+.lianxi{
+  color: #ffffff;
+  position: fixed;
+  bottom: 30px;
+  font-size: 14px;
+  right: -10px;
+  /* width: 80px;
+  height: 25px; */
+  padding: 6px 25px 6px 10px;
+  border-radius: 15px;
+  background-color: #0086f8;
 }
 </style>

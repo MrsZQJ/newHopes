@@ -22,7 +22,6 @@
         <span>{{people}}人团</span>
         <p>¥{{price}}</p>
       </div>
-      <!-- <i-icon type="share" size="24" @click="handleOpen1" /> -->
       <img
         src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/分享/fx_icon@2x.png"
         @click="handleOpen1"
@@ -33,7 +32,6 @@
     <div class="serabble">
       <div class="serabble_play">
         <span>拼团玩法</span>
-        <!--<span></span>-->
       </div>
       <div class="serabble_list">
         <div>
@@ -168,6 +166,7 @@ export default {
         id: options.pinkid
       })
       .then(function(response) {
+        that.swipers = [];
         that.serviceinfo = response.data.data.storeInfo.info;
         that.pinks = response.data.data.pink;
         that.price = response.data.data.storeInfo.price;
@@ -181,9 +180,20 @@ export default {
         var pictures = response.data.data.storeInfo.picture;
         that.swipers = pictures.split(",");
         that.detail_image = detail_image.split(",");
+        that.imgHeight(that.detail_image);
       });
   },
   methods: {
+    imgHeight(wid) {
+      for (var i = 0; i < wid.length; i++) {
+        wx.getImageInfo({
+          src: wid[i],
+          success(res) {
+            console.log(res);
+          }
+        });
+      }
+    },
     getLogin() {
       wx.checkSession({
         success() {

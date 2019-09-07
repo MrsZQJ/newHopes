@@ -2,7 +2,7 @@
   <div id="body">
     <i-cell title="提现" is-link url="/pages/tixian/main"></i-cell>
     <div class="border1px"></div>
-    <i-cell title="核销记录" is-link url="/pages/Write-off/main"></i-cell>
+    <i-cell title="零钱明细" is-link url="/pages/Write-off/main"></i-cell>
     <div class="border1px"></div>
     <i-cell title="提现记录" is-link url="/pages/tixianDetail/main"></i-cell>
     <!--<div class="border1px"></div>
