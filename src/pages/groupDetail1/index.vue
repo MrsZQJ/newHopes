@@ -67,7 +67,7 @@
     <div class="clear"></div>
     <i-cell title="正在拼团的小伙伴" is-link only-tap-footer :url="'/pages/groupList1/main?pid='+pid"></i-cell>
 
-    <div v-for="(pink,index) in pinks" v-if="index<=1" :key="index">
+    <div v-for="(pink,index) in pinks" :key="index">
       <div class="serabblePeople">
         <div class="serabblePeople_Left">
           <img :src="pink.avatar" alt />
@@ -88,7 +88,6 @@
         :src="val"
         v-for="(val,idx) in detail_image"
         :key="idx"
-        @load="uiop"
       />
     </div>
     <div class="clear"></div>
@@ -185,11 +184,13 @@ export default {
   },
   methods: {
     imgHeight(wid) {
+      var thar=this
+      thar.comNum=[]
       for (var i = 0; i < wid.length; i++) {
         wx.getImageInfo({
           src: wid[i],
           success(res) {
-            console.log(res);
+            thar.comNum.push(375 / res.width * res.height);
           }
         });
       }
@@ -239,11 +240,6 @@ export default {
         this.addXiao = false;
       }, 5000);
     },
-    uiop(e) {
-      var num = parseInt(e.mp.target.dataset.eventid.split("_")[1]);
-      var arr = new Array();
-      this.comNum[num] = 375 / e.mp.detail.width * e.mp.detail.height;
-    }
   }
 };
 </script>     

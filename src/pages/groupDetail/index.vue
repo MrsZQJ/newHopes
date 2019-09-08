@@ -98,7 +98,6 @@
         :src="val"
         v-for="(val,idx) in detail_image"
         :key="idx"
-        @load="uiop"
       />
     </div>
     <div class="clear"></div>
@@ -173,13 +172,13 @@ export default {
         id: options.pinkid
       })
       .then(function(response) {
-        if (response.data.code==400) {
+        if (response.data.code == 400) {
           wx.showToast({
             title: "该拼团已结束！",
             icon: "none",
             duration: 2000
           });
-          return
+          return;
         }
         that.serviceinfo = response.data.data.storeInfo.info;
         that.pinks = response.data.data.pink;
@@ -194,15 +193,24 @@ export default {
         that.tel = response.data.data.storeInfo.service_tel;
         var detail_image = response.data.data.storeInfo.detail_image;
         that.detail_image = detail_image.split(",");
-
-        var obj = new Object();
-        for (var i = 0; i < response.data.data.storeInfo.picture.length; i++) {
-          obj = response.data.data.storeInfo.picture[i];
-          that.swipers.push(obj);
-        }
+        var pictures = response.data.data.storeInfo.picture;
+        that.swipers = pictures.split(",");
+        that.imgHeight(that.detail_image);
       });
   },
   methods: {
+    imgHeight(wid) {
+      var thar = this;
+      thar.comNum = [];
+      for (var i = 0; i < wid.length; i++) {
+        wx.getImageInfo({
+          src: wid[i],
+          success(res) {
+            thar.comNum.push(375 / res.width * res.height);
+          }
+        });
+      }
+    },
     handleOpen1() {
       this.visible1 = true;
     },
@@ -228,8 +236,6 @@ export default {
       });
     },
     handleClickItem(e) {
-      // console.log(e.currentTarget.dataset.index);
-      // if(e.currentTarget.dataset.index==1){
       this.visible1 = false;
       this.setAdd();
     },
@@ -238,11 +244,6 @@ export default {
       setTimeout(() => {
         this.addXiao = false;
       }, 5000);
-    },
-    uiop(e) {
-      var num = parseInt(e.mp.target.dataset.eventid.split("_")[1]);
-      var arr = new Array();
-      this.comNum[num] = 375 / e.mp.detail.width * e.mp.detail.height;
     }
   }
 };
@@ -423,7 +424,7 @@ swiper image {
 .nmvb {
   height: 25px;
 }
-.dv{
+.dv {
   height: 20px;
 }
 </style>

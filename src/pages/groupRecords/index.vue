@@ -9,7 +9,7 @@
     </div>
     <div v-for="(order,index) in records" :key="index">
       <div class="recordsList">
-        <div class="recordsList_left" @click="GoTogroupDetail">
+        <div class="recordsList_left" @click="GoTogroupDetail(order.pid)">
           <img :src="order.avatar" alt />
           <div>
             <p>{{order.user_name}}</p>
@@ -24,7 +24,7 @@
         </div>
         <div class="recordsListRight">
           <img
-            @click="CallPhone()"
+            @click="CallPhone(index)"
             src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/电话/dh_icon@2x.png"
             alt
           />
@@ -47,12 +47,15 @@ export default {
       .post("routine/Store/pink_order_list", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
         that.records = response.data.data;
+        console.log(that.records);
       });
   },
   methods: {
-    GoTogroupDetail() {
+    GoTogroupDetail(id) {
+      console.log(id);
+      
       wx.navigateTo({
-        url: "/pages/groupDetail/main"
+        url: "/pages/groupDetail1/main?pinkid=" + id
       });
     },
     GoTohexiao() {
@@ -60,9 +63,10 @@ export default {
         url: "/pages/hexiao/main"
       });
     },
-    CallPhone() {
+    CallPhone(i) {
+      var thar=this
       wx.makePhoneCall({
-        phoneNumber: "13040887911."
+      phoneNumber: thar.records[i].phone
       });
     }
   }
