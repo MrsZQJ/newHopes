@@ -28,9 +28,9 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#0086F8",
+    "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTitleText": "美哒哒",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "selectedColor": "#ff2d4a",

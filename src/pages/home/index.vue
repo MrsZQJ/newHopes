@@ -1,7 +1,7 @@
 <template>
   <div id="body">
     <div class="box">
-      <p>拼团玩法</p>
+      <p>营销工具</p>
       <div class="boxDetail">
         <div>
           <navigator url="/pages/pingTuan/main">
@@ -25,7 +25,7 @@
           <span>霸王卡</span>
         </div>
         <div @click="noGo">
-          <img src="https://www.meifuyihao.com/public/uploads/images/图标/图标/bwk_icon@2x.png" alt />
+          <img src="../../../static/img/xcx_icon@2x.png" alt />
           <span>小程序</span>
         </div>
         <div @click="noGo">
@@ -94,6 +94,14 @@ export default {
 };
 </script>
 <style scoped>
+#body{
+  height: 100vh;
+  background-color: #F5F5F5;
+}
+.box{
+  background-color: #ffffff;
+  margin-bottom: 16px;
+}
 .box p {
   line-height: 55px;
   font-size: 15px;

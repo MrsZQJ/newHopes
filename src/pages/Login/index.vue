@@ -2,15 +2,17 @@
   <div id="body">
     <div :style="{'margin-top':topHeight}" class="login">
       <img src="https://www.meifuyihao.com/public/uploads/images/图标/图标/logo@2x.png" alt />
+      <div class="mei">美达达</div>
       <div class="shu">
         <input type="number" placeholder="手机号码登录" v-model="phone" />
         <input type="password" placeholder="请输入密码" v-model="password" />
         <button @click="goToHome">登录</button>
-        <span @click="goToPassWord">忘记密码？</span><br>
-        
+        <span @click="goToPassWord">忘记密码？</span>
+        <br />
+
         <i-toast id="toast" />
       </div>
-      <a class="lianxi" href="tel:">联系我们</a>
+      <button @click="call" class="lianxi">联系我们</button>
     </div>
   </div>
 </template>
@@ -114,6 +116,11 @@ export default {
       wx.navigateTo({
         url: "/pages/authorization/main"
       });
+    },
+    call() {
+      wx.makePhoneCall({
+        phoneNumber: "13040887911"
+      });
     }
   }
 };
@@ -123,10 +130,15 @@ export default {
   text-align: center;
 }
 .login img {
-  width: 73px;
-  height: 73px;
-  margin-top: 185px;
-  margin-bottom: 48px;
+  width: 75px;
+  height: 75px;
+  margin-top: 135px;
+  margin-bottom: 7px;
+}
+.mei {
+  font-size: 22px;
+  color: #333333;
+  margin-bottom: 64px;
 }
 .login .shu input,
 .login .shu button {
@@ -136,34 +148,37 @@ export default {
   text-align: center;
   border: 1px solid #d3d3d3;
   display: inline-block;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
   color: #a4a4a4;
-  font-size: 14px;
+  font-size: 10px;
 }
 .login .shu button {
   font-size: 18px;
-  background-color: #0086f8;
+  background-color: #f35379;
   line-height: 45px;
   color: #ffffff;
-  margin-top: 22px;
+  margin-top: 13px;
+  margin-bottom: 0px;
+  border: none !important;
 }
 .shu span {
   color: #a1a8b0;
-  font-size: 15px;
+  font-size: 10px;
   margin-right: 70px;
-  margin-top: 10px;
+  margin-top: 5px;
   float: right;
 }
-.lianxi{
+.lianxi {
   color: #ffffff;
   position: fixed;
-  bottom: 30px;
-  font-size: 14px;
-  right: -10px;
-  /* width: 80px;
-  height: 25px; */
-  padding: 6px 25px 6px 10px;
-  border-radius: 15px;
-  background-color: #0086f8;
+  bottom: 32px;
+  font-size: 15px;
+  left: 268px;
+  border-top-left-radius: 36px;
+  border-bottom-left-radius: 36px;
+  background-color: #f35379;
+  width: 107px;
+  height: 36px;
+  line-height: 36px;
 }
 </style>

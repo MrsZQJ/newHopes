@@ -58,11 +58,16 @@ export default {
 };
 </script>
 <style scoped>
+#body {
+  background-color: #f5f5f5;
+  height: 100vh;
+}
 .touxiang {
   width: 750rpx;
   height: 50px;
   margin-top: 20px;
   margin-bottom: 28px;
+  background-color: #ffffff;
 }
 .touxiang img {
   width: 50px;
@@ -78,6 +83,7 @@ export default {
 }
 .middle {
   border-bottom: 2px solid #000000;
+  background-color: #ffffff;
 }
 .middle .box {
   width: 33%;
