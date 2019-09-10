@@ -1,7 +1,7 @@
 <template>
   <div id="body">
     <div :style="{'margin-top':topHeight}" class="login">
-      <img src="https://www.meifuyihao.com/public/uploads/images/图标/图标/logo@2x.png" alt />
+      <img src="../../../static/img/logo@2x.png" alt />
       <div class="mei">美达达</div>
       <div class="shu">
         <input type="number" placeholder="手机号码登录" v-model="phone" />
@@ -12,7 +12,10 @@
 
         <i-toast id="toast" />
       </div>
-      <button @click="call" class="lianxi">联系我们</button>
+      <button @click="call" class="lianxi">
+        <img src="../../../static/img/lx_icon@2x.png" alt />
+        <span>联系我们</span>
+      </button>
     </div>
   </div>
 </template>
@@ -92,12 +95,12 @@ export default {
         .then(function(response) {
           wx.setStorageSync("sid", response.data.data.id);
           if (response.data.code == "200") {
-            wx.switchTab({
-              url: "/pages/home/main"
+            // wx.switchTab({
+            //   url: "/pages/home/main"
+            // });
+            wx.navigateTo({
+              url: "/pages/newPingTuan/main"
             });
-            // wx.navigateTo({
-            //    url: "/pages/newPingTuan/main"
-            // })
           } else {
             wx.showToast({
               title: response.data.msg,
@@ -129,10 +132,10 @@ export default {
 .login {
   text-align: center;
 }
-.login img {
+.login > img {
   width: 75px;
   height: 75px;
-  margin-top: 135px;
+  margin-top: 104px;
   margin-bottom: 7px;
 }
 .mei {
@@ -148,7 +151,7 @@ export default {
   text-align: center;
   border: 1px solid #d3d3d3;
   display: inline-block;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #a4a4a4;
   font-size: 10px;
 }
@@ -157,7 +160,7 @@ export default {
   background-color: #f35379;
   line-height: 45px;
   color: #ffffff;
-  margin-top: 13px;
+  margin-top: 8px;
   margin-bottom: 0px;
   border: none !important;
 }
@@ -171,14 +174,23 @@ export default {
 .lianxi {
   color: #ffffff;
   position: fixed;
-  bottom: 32px;
-  font-size: 15px;
+  bottom: 67px;
   left: 268px;
   border-top-left-radius: 36px;
   border-bottom-left-radius: 36px;
   background-color: #f35379;
   width: 107px;
   height: 36px;
-  line-height: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lianxi span {
+  font-size: 15px;
+}
+.lianxi img {
+  width: 19px;
+  height: 19px;
+  margin-left: -5px;
 }
 </style>

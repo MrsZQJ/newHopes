@@ -5,8 +5,8 @@
     <i-cell title="零钱明细" is-link url="/pages/Write-off/main"></i-cell>
     <div class="border1px"></div>
     <i-cell title="提现记录" is-link url="/pages/tixianDetail/main"></i-cell>
-    <!--<div class="border1px"></div>
-    <i-cell title="购买记录" is-link url="/pages/buyHistory/main"></i-cell>-->
+    <div class="border1px"></div>
+    <i-cell title="购买记录" is-link url="/pages/buyHistory/main"></i-cell>
     <div class="pay_footer">
       <div class="footerLeft">
         

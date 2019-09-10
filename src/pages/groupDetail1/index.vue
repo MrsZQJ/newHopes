@@ -1,121 +1,115 @@
 <template>
-  <div id="body">
-    <!-- 1.0 轮播图 -->
-    <swiper
-      :indicator-dots="true"
-      :autoplay="true"
-      :interval="3000"
-      :duration="1000"
-      indicator-active-color="#ffffff"
-      circular
-    >
-      <block v-for="(item,index) in swipers" :key="index">
-        <swiper-item>
-          <img :src="item" />
-        </swiper-item>
-      </block>
-    </swiper>
-    <!-- 购物街分享 -->
-    <div class="shopping">
-      <div>
-        <p>{{pname}}</p>
-        <span>{{people}}人团</span>
-        <p>¥{{price}}</p>
+  <div class="bgf">
+    <div id="body">
+      <!-- 1.0 轮播图 -->
+      <swiper
+        :indicator-dots="true"
+        :autoplay="true"
+        :interval="3000"
+        :duration="1000"
+        indicator-active-color="#ffffff"
+        circular
+      >
+        <block v-for="(item,index) in swipers" :key="index">
+          <swiper-item>
+            <img :src="item" />
+          </swiper-item>
+        </block>
+      </swiper>
+      <!-- 购物街分享 -->
+      <div class="fenx">
+        <span>拼团</span>
+        <img src="../../../static/img/fx_icon@2x.png" @click="handleOpen1" alt />
       </div>
-      <img
-        src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/分享/fx_icon@2x.png"
-        @click="handleOpen1"
-        alt
-      />
-    </div>
-    <div class="clear"></div>
-    <div class="serabble">
-      <div class="serabble_play">
-        <span>拼团玩法</span>
-      </div>
-      <div class="serabble_list">
+      <div class="shopping">
         <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/ktct_icon@2x.png"
-            alt
-          />
-          <p>开团/参团</p>
-        </div>
-        <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/fk_icon@2x.png"
-            alt
-          />
-          <p>付款</p>
-        </div>
-        <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/fk_icon@2x.png"
-            alt
-          />
-          <p>邀请好友</p>
-        </div>
-        <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/kt_icon@2x.png"
-            alt
-          />
-          <p>成团</p>
+          <span>{{people}}人团</span>
+          <p>{{pname}}</p>
+          <p>¥{{price}}</p>
         </div>
       </div>
-    </div>
-    <div class="clear"></div>
-    <i-cell title="正在拼团的小伙伴" is-link only-tap-footer :url="'/pages/groupList1/main?pid='+pid"></i-cell>
+      <div class="clear"></div>
+      <div class="serabble">
+        <div class="serabble_play">
+          <span>拼团玩法</span>
+          <button @click="fghj">个人中心</button>
+        </div>
+        <div class="borf"></div>
+        <div class="serabble_list">
+          <div>
+            <img src="../../../static/img/kt_icon@2x.png" alt />
+            <p>开团/参团</p>
+          </div>
 
-    <div v-for="(pink,index) in pinks" :key="index">
-      <div class="serabblePeople">
-        <div class="serabblePeople_Left">
-          <img :src="pink.avatar" alt />
-          <span>{{pink.pname}}</span>
-          <i>{{pink.people}}人团</i>
+          <div>
+            <img src="../../../static/img/fk_icon@2x.png" alt />
+            <p>付款</p>
+          </div>
+          <div>
+            <img src="../../../static/img/yq_icon@2x.png" alt />
+            <p>邀请好友</p>
+          </div>
+          <div>
+            <img src="../../../static/img/ct_icon@2x.png" alt />
+            <p>成团</p>
+          </div>
         </div>
-        <div class="serabblePeople_Right">{{pink.pink==1?'已成团':'未成团'}}</div>
+      </div>
+      <div class="clear"></div>
+      <i-cell title="正在拼团的小伙伴" value="更多"></i-cell>
+
+      <div v-for="(pink,index) in pinks" :key="index">
+        <div class="serabblePeople">
+          <div class="serabblePeople_Left">
+            <img :src="pink.avatar" alt />
+            <span>{{pink.pname}}</span>
+            <i>{{pink.people}}人团</i>
+          </div>
+          <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div>
+          <div v-else class="serabblePeople_Right">去参团</div>
+        </div>
+      </div>
+      <div class="clear"></div>
+      <div class="datail">
+        <p>服务详情</p>
+        <div class="border1px"></div>
+        <span>{{serviceinfo}}</span>
+        <img
+          :style="{height:comNum[idx]+'px !important' }"
+          :src="val"
+          v-for="(val,idx) in detail_image"
+          :key="idx"
+        />
+      </div>
+      <div class="clear"></div>
+      <div class="datail">
+        <p>参团须知</p>
+        <div class="border1px"></div>
+        <span>{{notice}}</span>
+      </div>
+      <div class="clear"></div>
+      <div class="datail">
+        <p>商家信息</p>
+        <div class="border1px"></div>
+        <p>名称: {{shop_name}}</p>
+        <p>地址: {{address}}</p>
+        <p>电话: {{tel}}</p>
+      </div>
+      <div class="footFix" @click="goToPay">¥{{price}}({{people}}人团)</div>
+      <i-action-sheet
+        :visible="visible1"
+        :actions="actions1"
+        show-cancel
+        @cancel="handleCancel1"
+        @click="handleClickItem"
+      />
+      <div class="addXiao" v-show="addXiao">
+        <span></span>
+        点击 [添加小程序] , 下次访问更便捷 >
       </div>
     </div>
-
-    <div class="clear"></div>
-    <div class="datail">
-      <p>服务详情</p>
-      <div class="border1px"></div>
-      <span>{{serviceinfo}}</span>
-      <img
-        :style="{height:comNum[idx]+'px !important' }"
-        :src="val"
-        v-for="(val,idx) in detail_image"
-        :key="idx"
-      />
-    </div>
-    <div class="clear"></div>
-    <div class="datail">
-      <p>参团须知</p>
-      <div class="border1px"></div>
-      <span>{{notice}}</span>
-    </div>
-    <div class="clear"></div>
-    <div class="datail">
-      <p>商家信息</p>
-      <div class="border1px"></div>
-      <p>名称: {{shop_name}}</p>
-      <p>地址: {{address}}</p>
-      <p>电话: {{tel}}</p>
-    </div>
-    <div class="nmvb"></div>
-    <div class="footFix" @click="goToPay">¥{{price}}({{people}}人团)</div>
-    <i-action-sheet
-      :visible="visible1"
-      :actions="actions1"
-      show-cancel
-      @cancel="handleCancel1"
-      @click="handleClickItem"
-    />
-    <div class="addXiao" v-show="addXiao">
-      <span></span>
-      点击 [添加小程序] , 下次访问更便捷 >
+    <div class="foot">
+      <img src="../../../static/img/组 1256@2x.png" alt />
     </div>
   </div>
 </template>
@@ -184,8 +178,8 @@ export default {
   },
   methods: {
     imgHeight(wid) {
-      var thar=this
-      thar.comNum=[]
+      var thar = this;
+      thar.comNum = [];
       for (var i = 0; i < wid.length; i++) {
         wx.getImageInfo({
           src: wid[i],
@@ -240,10 +234,18 @@ export default {
         this.addXiao = false;
       }, 5000);
     },
+    fghj() {
+      wx.navigateTo({
+        url: "/pages/PersonalCenter/main"
+      });
+    }
   }
 };
 </script>     
 <style scoped>
+#body {
+  background-color: #ffffff;
+}
 .addXiao {
   color: #000000;
   background-color: #ffffff;
@@ -266,7 +268,7 @@ export default {
 }
 swiper {
   text-align: center !important;
-  height: 37vh;
+  height: 186px;
 }
 swiper image {
   width: 100%;
@@ -277,7 +279,7 @@ swiper image {
   margin-left: 15px;
   padding: 15px 0 10px 0;
 }
-.shopping > div p:nth-child(1) {
+.shopping > div p:nth-child(2) {
   font-size: 15px;
   color: #333333;
   line-height: 22px;
@@ -288,12 +290,19 @@ swiper image {
   color: #e80000;
   line-height: 24px;
 }
-.shopping img {
-  float: right;
-  margin-top: 25px;
-  margin-right: 17px;
+.fenx img {
   width: 25px;
   height: 25px;
+}
+.fenx {
+  height: 50px;
+  padding: 0 21px;
+  background-color: #f35379;
+  color: #ffffff;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .shopping {
   position: relative;
@@ -302,19 +311,20 @@ swiper image {
 .shopping span {
   width: 35px;
   height: 15px;
-  border: 1px solid #c7c7cc;
+  border: 1px solid #f35379;
   font-size: 8px;
   text-align: center;
   line-height: 15px;
-  color: #c7c7cc;
-  margin-left: 20px;
+  color: #f35379;
+  margin-right: 5px;
   float: left;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .serabble {
   width: 690rpx;
   height: 138px;
   padding: 12px 15px 15px 15px;
+  position: relative;
 }
 .serabble_play {
   overflow: hidden;
@@ -322,24 +332,30 @@ swiper image {
 .serabble_play span:nth-child(1) {
   font-size: 15px;
   color: #333333ff;
-
   float: left;
 }
-.serabble_play span:nth-child(2) {
+.serabble_play button {
   font-size: 12px;
   color: #ffffffff;
   line-height: 24px;
   text-align: center;
+  padding: 0;
+  text-align: center;
   width: 69px;
   height: 24px;
   border-radius: 30px;
-  background-color: #0086f7ff;
+  background-color: #f35379;
   float: right;
+  z-index: 99999;
 }
 .serabble_list {
   padding: 22px 12px 15px 12px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+.serabble_list div {
+  z-index: 9999999;
 }
 .serabble_list img {
   width: 40px;
@@ -347,6 +363,14 @@ swiper image {
   display: block;
   margin: 0 auto;
   margin-bottom: 10px;
+}
+.borf {
+  border-bottom: 3px solid #f35379;
+  width: 262px;
+  margin-top: -50px;
+  position: absolute;
+  top: 127px;
+  left: 55px;
 }
 .shopping_play .i-cell-text {
   font-size: 15px;
@@ -387,10 +411,23 @@ swiper image {
 }
 .serabblePeople .serabblePeople_Right {
   font-size: 14px;
-  color: #ea6584;
+  color: #333333;
   float: right;
   margin-right: 15px;
   line-height: 60px;
+}
+.serabblePeople_Right2 {
+  font-size: 12px;
+  color: #ffffff;
+  padding: 0px 17px;
+  border-radius: 24px;
+  background-color: #f35379;
+  float: right;
+  margin-right: 15px;
+  line-height: 60px;
+  height: 24px;
+  line-height: 24px;
+  margin-top: 17px;
 }
 .datail {
   padding: 0 15px 30px 15px;
@@ -419,7 +456,14 @@ swiper image {
   position: fixed;
   bottom: 0;
 }
-.nmvb {
-  height: 25px;
+
+.foot img {
+  display: block;
+  margin: 20px auto;
+  width: 117px;
+  height: 22px;
+}
+.foot {
+  height: 85px;
 }
 </style>

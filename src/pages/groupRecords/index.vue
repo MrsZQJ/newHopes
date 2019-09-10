@@ -18,11 +18,14 @@
               <span>{{order.people}}人团</span> |
               <span>已参与{{order.total_num}}人</span>
             </p>
-            <i :class="order.k_id==0?'red':''">团长</i>
-            <i :class="order.is_shop==1?'red':''">未到店</i>
+            <p>2019-09-09  12:20:37</p>
           </div>
         </div>
         <div class="recordsListRight">
+          <div>
+            <i>{{order.is_shop==1?'未到店':'已到店'}}</i>
+            <i>{{order.k_id==1?'团长':'团员'}}</i>
+          </div>
           <img
             @click="CallPhone(index)"
             src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/电话/dh_icon@2x.png"
@@ -47,13 +50,12 @@ export default {
       .post("routine/Store/pink_order_list", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
         that.records = response.data.data;
-        console.log(that.records);
+        console.log(response);
+        
       });
   },
   methods: {
     GoTogroupDetail(id) {
-      console.log(id);
-      
       wx.navigateTo({
         url: "/pages/groupDetail1/main?pinkid=" + id
       });
@@ -64,9 +66,9 @@ export default {
       });
     },
     CallPhone(i) {
-      var thar=this
+      var thar = this;
       wx.makePhoneCall({
-      phoneNumber: thar.records[i].phone
+        phoneNumber: thar.records[i].phone
       });
     }
   }
@@ -115,12 +117,13 @@ export default {
 .recordsList_left img {
   width: 40px;
   height: 40px;
+  border-radius: 40px;
   margin-left: 15px;
   margin-right: 10px;
   margin-top: 20px;
 }
 .recordsList_left div {
-  margin-top: 13px;
+  margin-top: 7px;
   min-width: 150px;
 }
 .recordsList_left p:nth-child(1) {
@@ -135,7 +138,11 @@ export default {
   color: #999999;
   font-size: 10px;
 }
-.recordsList_left i {
+.recordsList_left p:nth-child(4) {
+  color: #999999;
+  font-size: 10px;
+}
+.recordsListRight i {
   width: auto;
   height: 15px;
   border-radius: 20px;
@@ -143,31 +150,29 @@ export default {
   position: absolute;
   padding: 0 7px;
 }
-.recordsList_left i:nth-child(4) {
-  border: 1px solid;
+.recordsListRight i:nth-child(1) {
+  border: 1px solid #999999;
+  color: #999999;
   text-align: center;
   line-height: 15px;
   top: 10px;
-  right: 44px;
+  right: 15px;
 }
-.recordsList_left i:nth-child(5) {
-  border: 1px solid;
-  text-align: center;
-  line-height: 15px;
-  top: 10px;
-  right: 80px;
-}
-.red {
+.recordsListRight i:nth-child(2) {
+  border: 1px solid #ea6584;
   color: #ea6584;
-  border-color: #ea6584;
+  text-align: center;
+  line-height: 15px;
+  top: 10px;
+  right: 68px;
 }
 .recordsListRight {
   float: right;
-  line-height: 80px;
   margin-right: 15px;
 }
 .recordsListRight img {
   width: 20px;
   height: 20px;
+  margin-top: 40px;
 }
 </style>

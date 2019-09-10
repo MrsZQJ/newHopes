@@ -34,7 +34,7 @@ export default {
 #body span {
   width: 130px;
   height: 44px;
-  background-color: #3e89e4;
+  background-color: #F35379;
   color: #ffffff;
   border-radius: 40px;
   text-align: center;

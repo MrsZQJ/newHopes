@@ -2,29 +2,30 @@
   <div id="body">
     <i-input right title="拼团活动名称" placeholder="请填写拼团名称" maxlength="20" @change="name" />
     <div class="border1px"></div>
-    <div class="changeTime" @click="startTime">
+    <!-- <div class="changeTime" @click="startTime">
       <span>拼团开始时间</span>
       <span>{{currentDate1}}</span>
-    </div>
-    <div class="changeTime" @click="endTime">
-      <span>拼团结束时间</span>
-      <span>{{currentDate2}}</span>
+    </div>-->
+    <div class="changeTime">
+      <!-- <span>拼团结束时间</span> -->
+      <span @click="startTime">{{currentDate1}}</span>
+      <span @click="endTime">{{currentDate2}}</span>
     </div>
     <div class="border1px"></div>
     <div class="chooseNum">
       <p>拼团人数</p>
-      <div class="box">
+      <div class="box" v-for="(val,idx) in ib" :key="idx">
         <div>
-          <input maxlength="4" type="number" placeholder="0" v-model="people" />
-          <i>|</i>
-          <span>人</span>
+          <input maxlength="4" type="number" placeholder="0" @input="people(idx)"/>
         </div>
+        <div>人</div>
         <div>
-          <input type="digit" maxlength="6" placeholder="0" v-model="price" />
-          <i>|</i>
-          <span>元</span>
+          <input type="digit" maxlength="6" placeholder="0" @input="price(idx)"  />
         </div>
+        <div>¥</div>
+        <div @click="removed(idx)">&</div>
       </div>
+      <div class="addBox" @click="addBox">+添加价格</div>
     </div>
     <div class="clear"></div>
     <div class="pingtuanTop">
@@ -122,18 +123,18 @@ export default {
       telNalue: "",
       minDate1: new Date().getTime(),
       maxDate: new Date(2019, 10, 1).getTime(),
-      currentDate1: time.formatTime(new Date().getTime()), //用户选择的起始时间
+      currentDate1: "拼团开始时间", //用户选择的起始时间
       showStartTime: false, //是否显示开始时间选择框
-      currentDate2: time.formatTime(new Date().getTime()), //用户选择的结束时间
+      currentDate2: "拼团结束时间", //用户选择的结束时间
       showEndTime: false, //是否显示结束时间选择框,
       imgtop: "",
       imgfuwu: "",
-      people: NaN,
-      price: NaN,
       shopname: "",
       info: "",
       topimgList: [],
-      fuwuimgList: []
+      fuwuimgList: [],
+      iii:1,
+      ib: [{people:'people',price:'price'}],
     };
   },
   methods: {
@@ -195,9 +196,6 @@ export default {
                 "https://www.meifuyihao.com/index.php/routine/Store/uploadimg", //接受文件的url
               filePath: tempFilePaths[i], //字符串
               name: "file", //后台接受的字段名称
-              /*header: {
-              'token': wx.getStorageSync('token')
-            },*/
               success: function(res) {
                 var data = JSON.parse(res.data);
                 //that.imgList.push(data.replace(/[\\]/g, '').replace(/\"/g, ""))  //得到的数据添加到imgList中
@@ -248,9 +246,6 @@ export default {
             mask: true,
             duration: 10000
           });
-          // console.log(that.data.evalList)
-          // var uploadImgCount = 0;
-          // console.log(tempFilePaths)
           //遍历每个图片 去执行uploadFile
           for (var i = 0, h = tempFilePaths.length; i < h; i++) {
             if (i >= 7) {
@@ -361,7 +356,6 @@ export default {
             icon: "none",
             duration: 1000
           });
-
           wx.navigateTo({
             url: "/pages/pingTuan/main"
           });
@@ -391,7 +385,7 @@ export default {
       this.currentDate2 = time.formatTime(event.mp.detail);
     },
     //点击遮罩层关闭开始时间选择框
-    onStartClose() {
+    onStartClose(e) {
       this.showStartTime = false;
     },
     //点击遮罩层关闭结束时间选择框
@@ -405,6 +399,43 @@ export default {
     // 开启结束时间选择框
     endTime() {
       this.showEndTime = true;
+    },
+    addBox() {
+      this.iii+=1
+      var is = "people" + this.iii;
+      var ins = "price" + this.iii;
+      var obj = {
+        people: is,
+        price: ins
+      };
+      this.is = 11111111;
+      this.ins = 111;
+      this.ib.push(obj);
+      // var yu=this.ib[this.iii-1].people
+    },
+    removed(num) {
+      console.log(num);
+
+      // this.ib=this.remove(this.ib,this.ib[num])
+      this.ib.splice(num, 1);
+      var ins = `price${num}`;
+      console.log(this.ins);
+    },
+    remove(array, val) {
+      for (var i = 0; i < array.length; i++) {
+        if (array[i] == val) {
+          array.splice(i, 1);
+        }
+      }
+      return array;
+    },
+    people(e,mun){
+      // console.log(mun);
+      console.log(e);
+      
+    },
+    price(e,mun){
+
     }
   }
 };
@@ -430,6 +461,7 @@ export default {
 .chooseNum {
   width: 375px;
   height: 93px;
+  position: relative;
 }
 .chooseNum p {
   color: #333333;
@@ -438,52 +470,39 @@ export default {
   margin-left: 15px;
   margin-bottom: 17px;
 }
-.box div {
-  width: 101px;
-  height: 26px;
-  border-radius: 3px;
-  border: 1px solid #333333;
-  position: relative;
-}
-.box img {
-  float: left;
-  width: 50px;
-  height: 50px;
-  margin-top: -10px;
-  margin-left: 31px;
-}
-.box div:nth-child(1) {
+.box {
+  width: 226px;
+  height: 27px;
+  border-radius: 7px;
+  border: 1px solid #999999;
+  display: flex;
   margin-left: 15px;
-  float: left;
 }
-.box div:nth-child(2) {
-  margin-left: 31px;
-  float: left;
-}
-.box div span {
-  /*display: inline-block;
-  width: 49%;
+.box div {
+  width: 20%;
   height: 100%;
-  line-height: 26px;
   text-align: center;
-  color: #333333;
-  font-size: 12px;*/
-  position: absolute;
-  left: 80%;
-  transform: translate(-50%);
-  top: 2px;
-  font-size: 15px;
+  line-height: 27px;
 }
-.box div i {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  top: 3px;
-  font-size: 10px;
+.box div:nth-child(2n) {
+  background-color: #f35379;
+  color: #ffffff;
+  font-size: 12px;
 }
 .box div input {
   text-align: center;
-  width: 43px;
+  width: 100%;
+  margin-top: 3px;
+}
+.addBox {
+  font-size: 12px;
+  color: #333333;
+  border: 1px solid #333333;
+  border-radius: 3px;
+  padding: 3px;
+  position: absolute;
+  top: 41px;
+  right: 50px;
 }
 .pingtuanTop {
   width: 375px;

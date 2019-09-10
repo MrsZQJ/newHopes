@@ -68,6 +68,7 @@ export default {
   margin-top: 20px;
   margin-bottom: 28px;
   background-color: #ffffff;
+  padding-bottom: 70px;
 }
 .touxiang img {
   width: 50px;
@@ -82,13 +83,18 @@ export default {
   font-size: 15px;
 }
 .middle {
-  border-bottom: 2px solid #000000;
+  width: 345px;
+  height: 120px;
+  margin: 0 auto;
+  margin-top: -90px;
   background-color: #ffffff;
+  border: 1px solid #F5F5F5;
 }
 .middle .box {
   width: 33%;
   text-align: center;
   display: inline-block;
+  padding-top: 40px;
 }
 .middle .box p {
   color: #e80000;
@@ -96,7 +102,7 @@ export default {
   line-height: 24px;
 }
 .middle .box span {
-  color: #000000;
+  color: #C7C7CC;
   font-size: 14px;
   line-height: 24px;
 }
