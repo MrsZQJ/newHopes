@@ -99,7 +99,7 @@ export default {
             //   url: "/pages/home/main"
             // });
             wx.navigateTo({
-              url: "/pages/newPingTuan/main"
+              url: "/pages/Write-off/main"
             });
           } else {
             wx.showToast({

@@ -16,7 +16,8 @@
       <input class="ipt" type="number" placeholder="请再次输入你的密码" v-model="confirm"/>
     </div>
     <div class="bth"></div>
-    <i-button @click="handleClick" type="primary" shape="circle" size="small">确认修改</i-button>
+    <!-- <i-button @click="handleClick" type="primary" shape="circle" size="small">确认修改</i-button> -->
+    <button hover-class @click="handleClick" class="queren">确认修改</button>
   </div>
 </template>
 <script>
@@ -98,5 +99,14 @@ export default {
 }
 .bth {
   height: 50px;
+}
+.queren{
+  background-color: #F35379;
+  color: #ffffff;
+  font-size: 15px;
+  text-align: center;
+  width: 330px;
+  height: 42px;
+  border-radius: 42px;
 }
 </style>

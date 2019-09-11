@@ -44,6 +44,7 @@
       <div class="one">
         <i-icon type="return" size="24" @click="onClose" style="line-height: 49px;" />
         <div>提现方式</div>
+        <span @click="goToAddBlank">添加</span>
       </div>
 
       <div v-for="(card,index) in cards" :key="index">
@@ -58,11 +59,11 @@
       </div>
 
       <div class="border1px"></div>
-      <div class="three">
+      <!-- <div class="three">
         <div @click="goToAddBlank">
           <span>添加银行卡提现</span>
         </div>
-      </div>
+      </div>-->
     </van-popup>
   </div>
 </template>
@@ -83,23 +84,19 @@ export default {
   },
   onLoad() {
     var that = this;
+    that.extractprice=undefined
     this.$axios
       .post("routine/Store/getBank", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
-
         that.cards = response.data.data;
         that.realname = that.cards[0].real_name;
         that.bankcode = that.cards[0].bank_code;
-        // that.balance = that.cards[0].balance;
-        // that.available = (that.balance * 0.9).toFixed(2);
         that.bid = that.cards[0].bid;
       });
     this.$axios
       .post("routine/Store/getBalance", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
-        that.available = response.data.data.balance
-        // console.log(response.data.data.balance);
-        
+        that.available = response.data.data.balance;
       });
   },
   methods: {
@@ -120,19 +117,11 @@ export default {
       this.bankcode = filtered[0].bank_code;
       this.realname = filtered[0].real_name;
       this.balance = filtered[0].balance;
-      // this.available = (this.balance * 0.9).toFixed(2);
       this.bid = i;
       this.isShow = false;
     },
     withdraw() {
       var that = this;
-      // if (
-      //   that.bankcode == "" ||
-      //   that.realname == "" ||
-      //   that.extractprice == 0
-      // ) {
-      //   return;
-      // }
       if (that.bankcode == "") {
         wx.showToast({
           title: "卡号不能为空",
@@ -141,8 +130,8 @@ export default {
         });
         return;
       }
-      
-      if (that.extractprice == 0||that.extractprice == undefined) {
+
+      if (that.extractprice == 0 || that.extractprice == undefined) {
         wx.showToast({
           title: "提现金额为0",
           icon: "none",
@@ -164,7 +153,8 @@ export default {
           real_name: this.realname,
           bid: this.bid,
           bank_code: this.bankcode,
-          extract_price:  Math.floor((this.extractprice - this.feiNum) * 100) / 100,
+          extract_price:
+            Math.floor((this.extractprice - this.feiNum) * 100) / 100
         })
         .then(function(response) {
           wx.showToast({
@@ -227,7 +217,7 @@ export default {
   display: block;
   width: 329px;
   height: 42px;
-  background-color: #2287ff;
+  background-color: #F35379;
   color: #fefefe;
   font-size: 15px;
   border-radius: 66px;
@@ -238,6 +228,13 @@ export default {
 }
 .one {
   display: flex;
+  justify-content: space-between;
+}
+.one span {
+  line-height: 49px;
+  font-size: 15px;
+  color: #F35379;
+  margin-right: 15px;
 }
 .one div {
   flex: 1;

@@ -1,73 +1,96 @@
 <template>
-  <div id="body">
-    <div class="search">
-      <div class="searchBor" @click="GoTohexiao">
-        <i-icon type="search" size="20" />
-        <input type="text" placeholder="请输入核销码" />
-        <div>核销</div>
+  <div class="bgf">
+    <div id="body">
+      <div class="search">
+        <div class="searchBor" @click="GoTohexiao">
+          <i-icon type="search" size="20" />
+          <input type="text" placeholder="请输入核销码" />
+          <div>核销</div>
+        </div>
       </div>
-    </div>
 
-    <div v-for="(pink,index) in pinks" :key="index">
-      <div class="gouWuJie">
-        <p>{{pink.pname}}</p>
-        <span>{{pink.pink_ok==1?'已成功':' '}}</span>
-      </div>
-      <div class="moneyDetail">
-        <div class="moneyDetailLeft" @click="GoTogroupDetail(pink.id)">
-          <span>{{pink.people}}人团</span>
-          <span>¥{{pink.price}}</span>
+      <div v-for="(pink,index) in pinks" :key="index">
+        <div class="gouWuJie">
+          <img src="../../../static/img/lb.png" alt />
+          <p>{{pink.pname}}</p>
+          <span v-if="pink.pink_ok==0">进行中</span>
+          <span v-else-if="pink.pink_ok==1">未开始</span>
+          <span v-else>已结束</span>
         </div>
-        <div class="moneyDetailRight">
-          <div class="rightTwo">
-            <p>¥{{pink.count_price}}</p>
-            <p>总业绩</p>
-            <p @click="GoToGroupRecords">拼团记录</p>
+        <div class="moneyDetail">
+          <div class="moneyDetailLeft" @click="GoTogroupDetail(pink.id)">
+            <p>
+              <span>团</span>
+              <span>{{pink.people}}人团</span>
+              <span>¥{{pink.price}}</span>
+            </p>
           </div>
-          <div class="rightOne">
-            <p>{{pink.count_people}}</p>
-            <p>参团人数</p>
-            <p @click="haibao(pink.id)">生成海报</p>
+          <div class="moneyDetailRight">
+            <div>
+              <p>{{pink.count_people}}</p>
+              <p>参团人数</p>
+            </div>
+            <div>
+              <p>¥{{pink.count_price}}</p>
+              <p>总收入</p>
+            </div>
+          </div>
+          <div class="moneyDetailBot">
+            <block v-if="pink.pink_ok==0">
+              <p @click="haibao(pink.id)">生成海报</p>
+              <p @click="GoToGroupRecords">拼团记录</p>
+              <p>立即成团</p>
+            </block>
+            <block v-else-if="pink.pink_ok==1">
+              <p>重新编辑</p>
+              <p @click="haibao(pink.id)">生成海报</p>
+              <p @click="GoToGroupRecords">拼团记录</p>
+            </block>
+            <block v-else>
+              <p @click="haibao(pink.id)">生成海报</p>
+              <p @click="GoToGroupRecords">拼团记录</p>
+              <p class="like">立即成团</p>
+            </block>
           </div>
         </div>
+        <div class="clear"></div>
       </div>
-      <div class="border1px"></div>
+      <img
+        @click="NewPingTuan"
+        src="../../../static/img/xj_icon@2x.png"
+        class="NewJia"
+        alt
+      />
+      <span @click="NewPingTuan" class="NewJian">新建拼团</span>
+      <mp-dialog
+        title="请选择模板"
+        mask
+        mask-closable
+        :show="isShow"
+        @buttontap="tapDialogButton"
+        :buttons="buttons"
+      >
+        <view>
+          <swiper :indicator-dots="indicatorDots" style="height:450px" @change="chang">
+            <swiper-item>
+              <canvas class="asd" canvas-id="myCanvas1"></canvas>
+            </swiper-item>
+            <swiper-item>
+              <canvas class="asd" canvas-id="myCanvas2"></canvas>
+            </swiper-item>
+            <swiper-item>
+              <canvas class="asd" canvas-id="myCanvas3"></canvas>
+            </swiper-item>
+            <swiper-item>
+              <canvas class="asd" canvas-id="myCanvas4"></canvas>
+            </swiper-item>
+            <swiper-item>
+              <canvas class="asd" canvas-id="myCanvas5"></canvas>
+            </swiper-item>
+          </swiper>
+        </view>
+      </mp-dialog>
     </div>
-    <img
-      @click="NewPingTuan"
-      src="https://mf-2019.oss-cn-shenzhen.aliyuncs.com/public/uploads/pink/20190906/5d72696d5c20b.png"
-      class="NewJia"
-      alt
-    />
-    <span @click="NewPingTuan" class="NewJian">新建拼团</span>
-    <mp-dialog
-      title="请选择模板"
-      mask
-      mask-closable
-      :show="isShow"
-      @buttontap="tapDialogButton"
-      :buttons="buttons"
-    >
-      <view>
-        <swiper :indicator-dots="indicatorDots" style="height:450px" @change="chang">
-          <swiper-item>
-            <canvas class="asd" canvas-id="myCanvas1"></canvas>
-          </swiper-item>
-          <swiper-item>
-            <canvas class="asd" canvas-id="myCanvas2"></canvas>
-          </swiper-item>
-          <swiper-item>
-            <canvas class="asd" canvas-id="myCanvas3"></canvas>
-          </swiper-item>
-          <swiper-item>
-            <canvas class="asd" canvas-id="myCanvas4"></canvas>
-          </swiper-item>
-          <swiper-item>
-            <canvas class="asd" canvas-id="myCanvas5"></canvas>
-          </swiper-item>
-        </swiper>
-      </view>
-    </mp-dialog>
   </div>
 </template>
 <script>
@@ -232,11 +255,6 @@ export default {
   bottom: 0;
   width: 100%;
 }
-.border1px {
-  height: 2px !important;
-  margin-bottom: 1px;
-  background-color: #333333 !important;
-}
 .asd {
   margin: 0px auto;
   width: 300px;
@@ -252,8 +270,9 @@ export default {
   width: 335px;
   height: 19px;
   padding: 6px 0;
-  border: 1px solid #cccccc;
-  border-radius: 8px;
+  /* border: 1px solid #cccccc; */
+  border-radius: 31px;
+  background-color: #F5F5F5;
 }
 .searchBor i-icon {
   margin-left: 15px;
@@ -266,6 +285,9 @@ export default {
   color: #bebebe;
   float: left;
   margin-top: -3px;
+}
+.like {
+  border-right-color: #e4e4e4 !important;
 }
 .searchBor div {
   width: 47px;
@@ -286,66 +308,99 @@ export default {
 }
 .gouWuJie p {
   text-align: left !important;
-  margin-left: 15px;
+  float: left;
 }
-.gouWuJie span:nth-child(2) {
+.gouWuJie img {
+  width: 20px;
+  height: 20px;
+  float: left;
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-left: 15px;
+  margin-top: 13px;
+}
+.gouWuJie span:nth-child(3) {
   float: right;
   margin-right: 15px;
 }
 .moneyDetail {
-  width: 750rpx;
   height: 120px;
+  overflow: hidden;
 }
 .moneyDetailLeft {
   margin-left: 15px;
   float: left;
-  line-height: 120px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  height: 70px;
+  width: 45%;
+}
+.moneyDetailLeft p {
+  height: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 15px;
 }
 .moneyDetailLeft span:nth-child(1) {
+  font-size: 10px;
+  background-color: #bebebe;
+  color: #ffffff;
+  padding: 2px;
+  text-align: center;
+  line-height: 16px;
+}
+.moneyDetailLeft span:nth-child(2) {
   color: #333333;
   font-size: 15px;
 }
-.moneyDetailLeft span:nth-child(2) {
+.moneyDetailLeft span:nth-child(3) {
   color: #e80000;
-  font-size: 20px;
+  font-size: 15px;
   margin-left: 13px;
 }
 .moneyDetailRight {
   float: right;
+  display: flex;
 }
 .moneyDetailRight div {
-  float: right;
+  width: 69px;
+  margin-right: 20px;
   text-align: center;
+}
+.moneyDetailRight div p {
+  margin-top: 14px;
+  margin-bottom: 7px;
 }
 .moneyDetailRight div p:nth-child(1) {
   color: #e70000;
   font-size: 15px;
-  margin-top: 16px;
 }
-.moneyDetailRight div p:nth-child(2) {
-  color: #333333;
-  font-size: 15px;
-  margin-top: 13px;
+.moneyDetailBot {
+  overflow: hidden;
+  height: 35px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
-.moneyDetailRight div p:nth-child(3) {
+.moneyDetailBot p {
   width: 69px;
   height: 24px;
   border-radius: 30px;
-  background-color: #d1d1d1;
+  background-color: #f35379;
   color: #ffffff;
   font-size: 12px;
   text-align: center;
   line-height: 24px;
-  margin-top: 17px;
+  margin-right: 20px;
 }
-.moneyDetailRight div:nth-child(1) {
+.rightTwo {
   margin-right: 24px;
 }
-.moneyDetailRight div:nth-child(1) p:nth-child(3) {
-  background-color: #0086f7;
-}
-.moneyDetailRight div:nth-child(2) {
-  margin-right: 20px;
+.rightTwo p:nth-child(3) {
+  background-color: #f35379;
 }
 .NewJia {
   width: 60px;

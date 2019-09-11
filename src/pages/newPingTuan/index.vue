@@ -1,114 +1,122 @@
 <template>
-  <div id="body">
-    <i-input right title="拼团活动名称" placeholder="请填写拼团名称" maxlength="20" @change="name" />
-    <div class="border1px"></div>
-    <!-- <div class="changeTime" @click="startTime">
+  <div class="bgf">
+    <div id="body">
+      <i-input right title="拼团活动名称" placeholder="请填写拼团名称" maxlength="20" @change="name" />
+      <div class="border1px"></div>
+      <!-- <div class="changeTime" @click="startTime">
       <span>拼团开始时间</span>
       <span>{{currentDate1}}</span>
-    </div>-->
-    <div class="changeTime">
-      <!-- <span>拼团结束时间</span> -->
-      <span @click="startTime">{{currentDate1}}</span>
-      <span @click="endTime">{{currentDate2}}</span>
-    </div>
-    <div class="border1px"></div>
-    <div class="chooseNum">
-      <p>拼团人数</p>
-      <div class="box" v-for="(val,idx) in ib" :key="idx">
-        <div>
-          <input maxlength="4" type="number" placeholder="0" @input="people(idx)"/>
-        </div>
-        <div>人</div>
-        <div>
-          <input type="digit" maxlength="6" placeholder="0" @input="price(idx)"  />
-        </div>
-        <div>¥</div>
-        <div @click="removed(idx)">&</div>
+      </div>-->
+      <div class="changeTime">
+        <!-- <span>拼团结束时间</span> -->
+        <span @click="startTime">{{currentDate1}}</span>
+        <span @click="endTime">{{currentDate2}}</span>
       </div>
-      <div class="addBox" @click="addBox">+添加价格</div>
-    </div>
-    <div class="clear"></div>
-    <div class="pingtuanTop">
-      <span>拼团页面顶部图</span>
-    </div>
-    <div class="border1px"></div>
-    <div class="border1px"></div>
-    <div class="imgJia">
-      <img
-        class="addImg"
-        @click="topimage"
-        src="https://www.meifuyihao.com/public/uploads/images/图标/图标/xj_icon@2x.png"
-      />
-      <div class="asdf" v-for="(top,index) in topimgList" :key="index" @click="delrImgTop(index)">
-        <img class="imgtop" :src="top" />
-        <span class="imhSpa">-</span>
+      <div class="border1px"></div>
+      <div class="chooseNum">
+        <p>拼团人数</p>
+        <div class="box" v-for="(val,idx) in array" :key="idx">
+          <div>
+            <input
+              maxlength="4"
+              :value="inputVal1[idx]"
+              type="number"
+              placeholder="0"
+              @input="getInputVal1"
+            />
+          </div>
+          <div>人</div>
+          <div>
+            <input
+              type="digit"
+              maxlength="6"
+              :value="inputVal2[idx]"
+              placeholder="0"
+              @input="getInputVal2"
+            />
+          </div>
+          <div>¥</div>
+          <div @click="removed">
+            <img class="dele" src="../../../static/img/delete.png" alt />
+          </div>
+        </div>
+        <div class="addBox" @click="addBox">+添加价格</div>
       </div>
-    </div>
-
-    <!--<input id="photo" type="file" accept="image/*">-->
-    <div class="clear"></div>
-    <div class="fuwuDetail">
-      <p>服务详情</p>
-      <textarea placeholder="请输入服务详情" v-model="info"></textarea>
-      <div class="fuwuImg">
-        <img
-          src="https://www.meifuyihao.com/public/uploads/images/图标/图标/xj_icon@2x.png"
-          class="addImg"
-          @click="fuwuimage"
-        />
-        <!-- <img class="imgfuwu" :src="fuwu" v-for="(fuwu,index) in fuwuimgList" :key="index" /> -->
-        <div
-          class="asdf"
-          v-for="(fuwu,index) in fuwuimgList"
-          :key="index"
-          @click="delrImgfuw(index)"
-        >
-          <img class="imgtop" :src="fuwu" />
+      <div class="clear"></div>
+      <div class="pingtuanTop">
+        <span>拼团页面顶部图</span>
+      </div>
+      <div class="border1px"></div>
+      <div class="border1px"></div>
+      <div class="imgJia">
+        <img class="addImg" @click="topimage" src="../../../static/img/jh_img@2x.png" />
+        <div class="asdf" v-for="(top,index) in topimgList" :key="index" @click="delrImgTop(index)">
+          <img class="imgtop" :src="top" />
           <span class="imhSpa">-</span>
         </div>
       </div>
-    </div>
-    <div class="clear"></div>
-    <i-input
-      right
-      title="商品数量"
-      type="number"
-      placeholder="请输入商品数量"
-      @change="number"
-      maxlength="11"
-    />
-    <div class="border1px"></div>
-    <i-input right title="店铺名称" placeholder="请输入店铺名称" @change="shopnm" maxlength="20" />
-    <div class="border1px"></div>
-    <i-input right title="地址位置" placeholder="请输入详细地址" @change="addr" maxlength="20" />
-    <div class="border1px"></div>
-    <i-input right title="客服电话" placeholder="请输入客服电话" @change="tel" maxlength="20" />
-    <div class="border1px"></div>
-    <div class="fuwuDetail">
-      <p>参团须知</p>
-      <textarea v-model="cantuanxuzhi"></textarea>
-      <span class="last" @click="publish">发布活动</span>
-    </div>
-    <van-popup :show="showStartTime" position="bottom" overlay="false" @close="onStartClose">
-      <van-datetime-picker
-        type="datetime"
-        :min-date="minDate1"
-        :max-date="maxDate"
-        @cancel="inStartClose"
-        @input="onInputStart"
-        @confirm="closeTimeChange"
+
+      <!--<input id="photo" type="file" accept="image/*">-->
+      <div class="clear"></div>
+      <div class="fuwuDetail">
+        <p>服务详情</p>
+        <textarea placeholder="请输入服务详情" v-model="info"></textarea>
+        <div class="fuwuImg">
+          <img src="../../../static/img/jh_img@2x.png" class="addImg" @click="fuwuimage" />
+          <!-- <img class="imgfuwu" :src="fuwu" v-for="(fuwu,index) in fuwuimgList" :key="index" /> -->
+          <div
+            class="asdf"
+            v-for="(fuwu,index) in fuwuimgList"
+            :key="index"
+            @click="delrImgfuw(index)"
+          >
+            <img class="imgtop" :src="fuwu" />
+            <span class="imhSpa">-</span>
+          </div>
+        </div>
+      </div>
+      <div class="clear"></div>
+      <i-input
+        right
+        title="美容院名称"
+        type="number"
+        placeholder="请美人院名称"
+        @change="number"
+        maxlength="11"
       />
-    </van-popup>
-    <van-popup :show="showEndTime" position="bottom" overlay="false" @close="onEndClose">
-      <van-datetime-picker
-        type="datetime"
-        :min-date="minDate1"
-        :max-date="maxDate"
-        @cancel="inEndClose"
-        @input="onInputEnd"
-        @confirm="closeTimeChange2"
-      />
-    </van-popup>
+      <div class="border1px"></div>
+      <i-input right title="地址位置" placeholder="请输入详细地址" @change="shopnm" maxlength="20" />
+      <div class="border1px"></div>
+      <i-input right title="客服电话" placeholder="请输入客服电话" @change="addr" maxlength="20" />
+      <div class="border1px"></div>
+      <!-- <i-input right title="客服电话" placeholder="请输入客服电话" @change="tel" maxlength="20" />
+      <div class="border1px"></div>-->
+      <div class="fuwuDetail">
+        <p>参团须知</p>
+        <textarea v-model="cantuanxuzhi"></textarea>
+      </div>
+      <van-popup :show="showStartTime" position="bottom" overlay="false" @close="onStartClose">
+        <van-datetime-picker
+          type="datetime"
+          :min-date="minDate1"
+          :max-date="maxDate"
+          @cancel="inStartClose"
+          @input="onInputStart"
+          @confirm="closeTimeChange"
+        />
+      </van-popup>
+      <van-popup :show="showEndTime" position="bottom" overlay="false" @close="onEndClose">
+        <van-datetime-picker
+          type="datetime"
+          :min-date="minDate1"
+          :max-date="maxDate"
+          @cancel="inEndClose"
+          @input="onInputEnd"
+          @confirm="closeTimeChange2"
+        />
+      </van-popup>
+    </div>
+    <span class="last" @click="publish">发布活动</span>
   </div>
 </template>
 <script>
@@ -133,8 +141,9 @@ export default {
       info: "",
       topimgList: [],
       fuwuimgList: [],
-      iii:1,
-      ib: [{people:'people',price:'price'}],
+      array: [1], //默认显示一个
+      inputVal1: [], //所有input的内容
+      inputVal2: []
     };
   },
   methods: {
@@ -401,41 +410,26 @@ export default {
       this.showEndTime = true;
     },
     addBox() {
-      this.iii+=1
-      var is = "people" + this.iii;
-      var ins = "price" + this.iii;
-      var obj = {
-        people: is,
-        price: ins
-      };
-      this.is = 11111111;
-      this.ins = 111;
-      this.ib.push(obj);
-      // var yu=this.ib[this.iii-1].people
+      this.array.push(1);
     },
-    removed(num) {
-      console.log(num);
-
-      // this.ib=this.remove(this.ib,this.ib[num])
-      this.ib.splice(num, 1);
-      var ins = `price${num}`;
-      console.log(this.ins);
-    },
-    remove(array, val) {
-      for (var i = 0; i < array.length; i++) {
-        if (array[i] == val) {
-          array.splice(i, 1);
-        }
+    removed(e) {
+      var nowidx = e.currentTarget.dataset.eventid.split("_")[1];
+      this.array.splice(nowidx, 1);
+      this.inputVal1.splice(nowidx, 1);
+      this.inputVal2.splice(nowidx, 1);
+      if (this.array.length < 1) {
+        oldarr = [0];
       }
-      return array;
     },
-    people(e,mun){
-      // console.log(mun);
-      console.log(e);
-      
+    getInputVal1(e) {
+      var nowIdx = e.currentTarget.dataset.eventid.split("_")[1];
+      var val = e.mp.detail.value;
+      this.inputVal1[nowIdx] = val;
     },
-    price(e,mun){
-
+    getInputVal2(e) {
+      var nowIdx = e.currentTarget.dataset.eventid.split("_")[1];
+      var val = e.mp.detail.value;
+      this.inputVal2[nowIdx] = val;
     }
   }
 };
@@ -460,7 +454,6 @@ export default {
 }
 .chooseNum {
   width: 375px;
-  height: 93px;
   position: relative;
 }
 .chooseNum p {
@@ -477,6 +470,7 @@ export default {
   border: 1px solid #999999;
   display: flex;
   margin-left: 15px;
+  margin-bottom: 15px;
 }
 .box div {
   width: 20%;
@@ -516,26 +510,28 @@ export default {
 }
 .imgJia {
   width: 375px;
-  /* height: 88px; */
 }
 .addImg {
-  width: 58px !important;
-  height: 58px !important;
+  width: 28px !important;
+  height: 28px !important;
   margin-left: 15px !important;
   margin-top: 15px !important;
   margin-bottom: 15px !important;
   vertical-align: top !important;
+  border: 1px solid #cccccc;
+  padding: 15px;
 }
 .fuwuImg {
-  /* padding: 20px 15px; */
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
 }
 .fuwuImg > img {
-  width: 58px;
-  height: 58px;
+  width: 28px;
+  height: 28px;
   margin: 5px;
+  border: 1px solid #cccccc;
+  padding: 15px;
 }
 .asdf img {
   width: 100%;
@@ -582,12 +578,17 @@ export default {
   display: block;
   width: 329px;
   height: 42px;
-  background-color: #2287ff;
+  background-color: #f35379;
   border-radius: 66px;
   margin: 39px auto;
   margin-bottom: 30px;
   color: #fefefe;
   text-align: center;
   line-height: 42px;
+}
+.dele {
+  width: 17px;
+  height: 17px;
+  margin-top: 5px;
 }
 </style>

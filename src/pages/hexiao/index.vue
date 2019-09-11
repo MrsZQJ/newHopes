@@ -1,15 +1,16 @@
 <template>
-  <div id="body">
-    <div class="top" :style="{'top':topHeight}">
-      <i-icon @click="GoBack" type="return" size="24" />
-      <!-- <i-input title="<" type="number" placeholder="请输入收货人姓名" /> -->
-      <input type="number" placeholder="请输入核销码" v-model="code" />
-      <span @click="hexiao">核销</span>
-    </div>
-    
-    <div class="border1px" :style="{'margin-top':margintopHeight}"></div>
-    
-    <!--<template v-for="rec in records">
+  <!-- <div class="bgf"> -->
+    <div id="body">
+      <div class="top" :style="{'top':topHeight}">
+        <i-icon @click="GoBack" type="return" size="24" />
+        <!-- <i-input title="<" type="number" placeholder="请输入收货人姓名" /> -->
+        <input type="number" placeholder="请输入核销码" v-model="code" />
+        <span @click="hexiao">核销</span>
+      </div>
+
+      <div class="border1px" :style="{'margin-top':margintopHeight}"></div>
+
+      <!--<template v-for="rec in records">
     <div class="box" @click="GoToWriteoff">
       <p>{{rec.pname}}</p>
       <div>
@@ -19,17 +20,17 @@
       </div>
     </div>
     <div class="border1px"></div>
-    </template>-->
-    
-  </div>
+      </template>-->
+    </div>
+  <!-- </div> -->
 </template>
 <script>
 export default {
   data() {
     return {
       //   globalData: ""
-      records:[],
-      code:undefined
+      records: [],
+      code: undefined
     };
   },
   created() {
@@ -49,28 +50,28 @@ export default {
       var bbb = "";
       wx.getSystemInfo({
         success: res => {
-          bbb = res.statusBarHeight + 8+ 31  + "px";
+          bbb = res.statusBarHeight + 8 + 31 + "px";
         }
       });
       return bbb;
     }
   },
-  onLoad(){
-  	
-  },
+  onLoad() {},
   methods: {
-  	hexiao(){
-  		 		
-  		this.$axios
-          .post("routine/Store/writeCode",{sid:wx.getStorageSync('sid'),code:this.code})
-                .then(function(response) {
-                  wx.showToast({
-              			title: response.data.msg,
-              			icon: 'none',
-              			duration: 1000,
-            				})
-                });
-  	},
+    hexiao() {
+      this.$axios
+        .post("routine/Store/writeCode", {
+          sid: wx.getStorageSync("sid"),
+          code: this.code
+        })
+        .then(function(response) {
+          wx.showToast({
+            title: response.data.msg,
+            icon: "none",
+            duration: 1000
+          });
+        });
+    },
     GoBack() {
       wx.navigateBack({
         delta: 1
@@ -86,12 +87,9 @@ export default {
 </script>
 
 <style scoped>
- 
-  
-   
 .top {
   position: fixed;
-  /* top: 60px; */
+  background-color: #ffffff;
 }
 .top i-icon {
   float: left;
@@ -100,18 +98,26 @@ export default {
 .top input {
   float: left;
   font-size: 13px;
-  width: 234px;
+  width: 215px;
   height: 31px;
   margin-left: 10px;
+  background-color: #F5F5F5;
+  border-radius: 31px;
+  padding-left: 15px;
 }
 .top span {
-  color: #333333;
+  color: #ffffff;
   font-size: 13px;
-  /* line-height: 25px; */
   position: absolute;
-  left: 230px;
-  top: 8px;
+  left: 212px;
+  top: 0px;
   z-index: 999999;
+  width: 59px;
+  height: 31px;
+  line-height: 31px;
+  background-color: #F35379;
+  border-radius: 31px;
+  text-align: center;
 }
 .box {
   width: 375px;

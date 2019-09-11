@@ -1,21 +1,27 @@
 <template>
-  <div id="body">
-    <div class="title">请输入绑定的手机号码</div>
-    <div class="shu">
-      <img src="https://www.meifuyihao.com/public/uploads/images/%E6%89%8B%E6%9C%BA@2x.png" alt />
-      <span>手机号码</span>
+  <div class="bgf">
+    <div id="body">
+      <div class="title">请输入绑定的手机号码</div>
+      <div class="shu">
+        <img src="https://www.meifuyihao.com/public/uploads/images/%E6%89%8B%E6%9C%BA@2x.png" alt />
+        <span>手机号码</span>
+      </div>
+      <input class="ipt" type="number" placeholder="请输入手机号码" v-model="phone" />
+      <div class="shu">
+        <img
+          src="https://www.meifuyihao.com/public/uploads/images/%E9%AA%8C%E8%AF%81%E7%A0%81@2x.png"
+          alt
+        />
+        <span>验证码</span>
+      </div>
+      <div class="por">
+        <input class="ipt" v-model="ma" type="number" placeholder="请输入验证码" />
+        <button :disabled="disable" class="btn" @click="getcode">{{msg}}</button>
+      </div>
+      <!-- <i-button @click="handleClick" type="primary" shape="circle" size="small">下一步</i-button> -->
+      <i-toast id="toast" />
     </div>
-    <input class="ipt" type="number" placeholder="请输入手机号码" v-model="phone" />
-    <div class="shu">
-      <img src="https://www.meifuyihao.com/public/uploads/images/%E9%AA%8C%E8%AF%81%E7%A0%81@2x.png" alt />
-      <span>验证码</span>
-    </div>
-    <div class="por">
-      <input class="ipt" v-model="ma" type="number" placeholder="请输入验证码" />
-      <button :disabled="disable" class="btn" @click="getcode">{{msg}}</button>
-    </div>
-    <i-button @click="handleClick" type="primary" shape="circle" size="small">下一步</i-button>
-    <i-toast id="toast" />
+    <button hover-class @click="handleClick" class="queren">下一步</button>
   </div>
 </template>
 <script>
@@ -134,14 +140,13 @@ button[disabled] {
   margin-bottom: 81px;
 }
 .btn {
-  /* width: 74px; */
   height: 24px;
   border-radius: 12px;
   color: #ffffff;
   text-align: center;
   line-height: 24px;
   font-size: 12px;
-  background-color: #0086f7;
+  background-color: #f35379;
   padding: 0px 8px;
   position: absolute;
   top: 12px;
@@ -150,5 +155,14 @@ button[disabled] {
 .por .ipt {
   width: 246px;
   margin-right: 80px;
+}
+.queren {
+  background-color: #f35379;
+  color: #ffffff;
+  font-size: 15px;
+  text-align: center;
+  width: 330px;
+  height: 42px;
+  border-radius: 42px;
 }
 </style>

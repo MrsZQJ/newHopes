@@ -18,7 +18,7 @@
 .clear {
   width: 100%;
   height: 8px;
-  background-color: #fff5f5f5;
+  background-color: #F5F5F5;
 }
 .border1px {
   width: 100%;
@@ -27,6 +27,7 @@
 }
 .bgf {
   height: 100%;
+  min-height: 100vh;
   background-color: #f5f5f5 !important;
 }
 </style>

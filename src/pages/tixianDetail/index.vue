@@ -9,7 +9,7 @@
         </div>
         <div class="boxRight">
           <p>+{{order.extract_price}}</p>
-          <p></p>
+          <p>提现成功</p>
         </div>
       </div>
       <div class="border1px"></div>
@@ -29,14 +29,38 @@ export default {
       .post("routine/Store/getExtract", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
         that.records = response.data.data;
+        for (var i = 0; i < that.records.length; i++) {
+          that.records[i].add_time = that.formatTime(
+            that.records[i].add_time,
+            "Y.M.D h:m:s"
+          );
+        }
       });
+  },
+  methods: {
+    formatNumber(n) {
+      n = n.toString();
+      return n[1] ? n : "0" + n;
+    },
+    formatTime(number, format) {
+      var formateArr = ["Y", "M", "D", "h", "m", "s"];
+      var returnArr = [];
+      var date = new Date(number * 1000);
+      returnArr.push(date.getFullYear());
+      returnArr.push(this.formatNumber(date.getMonth() + 1));
+      returnArr.push(this.formatNumber(date.getDate()));
+      returnArr.push(this.formatNumber(date.getHours()));
+      returnArr.push(this.formatNumber(date.getMinutes()));
+      returnArr.push(this.formatNumber(date.getSeconds()));
+      for (var i in returnArr) {
+        format = format.replace(formateArr[i], returnArr[i]);
+      }
+      return format;
+    }
   }
 };
 </script>
 <style scoped>
-.border1px{
-  background-color: #333333 !important;
-}
 .box {
   height: 82px;
   width: 750rpx;
@@ -73,5 +97,6 @@ export default {
   color: #565664;
   font-size: 12px;
   margin-top: 6px;
+  text-align: right;
 }
 </style>
