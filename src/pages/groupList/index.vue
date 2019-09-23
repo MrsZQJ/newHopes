@@ -3,7 +3,7 @@
     <div v-for="(pink,index) in pinks" :key="index">
       <div class="serabblePeople">
         <div class="serabblePeople_Left">
-          <img :src="pink.avatar" alt />
+          <img :src="pink.avatar" />
           <span>{{pink.pname}}</span>
           <i>{{pink.people}}人团</i>
         </div>

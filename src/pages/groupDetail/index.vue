@@ -1,131 +1,137 @@
 <template>
-  <div id="body">
-    <!-- 1.0 轮播图 -->
-    <swiper
-      :indicator-dots="true"
-      :autoplay="true"
-      :interval="3000"
-      :duration="1000"
-      indicator-active-color="#ffffff"
-      circular
-    >
-      <block v-for="(item,index) in swipers" :key="index">
-        <swiper-item>
-          <image :src="item" />
-        </swiper-item>
-      </block>
-    </swiper>
-    <!-- 购物街分享 -->
-    <div class="shopping">
-      <div>
-        <p>{{pname}}</p>
-        <span>{{people}}人团</span>
-        <p>¥{{price}}</p>
+  <div class="bgf">
+    <div id="body">
+      <!-- 1.0 轮播图 -->
+      <swiper
+        :indicator-dots="true"
+        :autoplay="true"
+        :interval="3000"
+        :duration="1000"
+        indicator-active-color="#ffffff"
+        circular
+      >
+        <block v-for="(item,index) in swipers" :key="index">
+          <swiper-item>
+            <image :src="item" />
+          </swiper-item>
+        </block>
+      </swiper>
+      <!-- 购物街分享 -->
+      <div class="fenx">
+        <span>拼团</span>
+        <img src="../../../static/img/fx_icon@2x.png" @click="handleOpen1" alt />
       </div>
-      <!-- <i-icon type="share" size="24" @click="handleOpen1" /> -->
-      <img
-        src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/分享/fx_icon@2x.png"
-        @click="handleOpen1"
-        alt
-      />
-    </div>
-    <div class="clear"></div>
-    <div class="serabble">
-      <div class="serabble_play">
-        <span>拼团玩法</span>
-        <span @click="goToMyself">个人中心</span>
-      </div>
-      <div class="serabble_list">
+      <div class="shopping">
         <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/ktct_icon@2x.png"
-            alt
-          />
-          <p>开团/参团</p>
-        </div>
-        <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/fk_icon@2x.png"
-            alt
-          />
-          <p>付款</p>
-        </div>
-        <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/fk_icon@2x.png"
-            alt
-          />
-          <p>邀请好友</p>
-        </div>
-        <div>
-          <img
-            src="https://www.meifuyihao.com/public/uploads/images/小程序美达达图标/拼团详情/kt_icon@2x.png"
-            alt
-          />
-          <p>成团</p>
+          <span>{{people}}人团</span>
+          <p>{{pname}}</p>
+          <p>¥{{price}}</p>
         </div>
       </div>
-    </div>
-    <div class="clear"></div>
-    <i-cell
-      title="正在拼团的小伙伴"
-      value="更多"
-      is-link
-      only-tap-footer
-      :url="'/pages/groupList/main?pid='+pid"
-    ></i-cell>
+      <div class="clear"></div>
+      <div class="serabble">
+        <div class="serabble_play">
+          <span>拼团玩法</span>
+          <button @click="goToMyself">个人中心</button>
+        </div>
+        <div class="borf"></div>
+        <div class="serabble_list">
+          <div>
+            <img src="../../../static/img/kt_icon@2x.png" alt />
+            <p>开团/参团</p>
+          </div>
 
-    <div v-for="(pink,index) in pinks" :key="index">
-      <div class="border1px"></div>
-      <div class="serabblePeople">
-        <div class="serabblePeople_Left">
-          <img :src="pink.avatar" alt />
-          <span>{{pink.pname}}</span>
-          <i>{{pink.people}}人团</i>
+          <div>
+            <img src="../../../static/img/fk_icon@2x.png" alt />
+            <p>付款</p>
+          </div>
+          <div>
+            <img src="../../../static/img/yq_icon@2x.png" alt />
+            <p>邀请好友</p>
+          </div>
+          <div>
+            <img src="../../../static/img/ct_icon@2x.png" alt />
+            <p>成团</p>
+          </div>
         </div>
-        <div class="serabblePeople_Right">{{pink.pink==1?'已成团':'未成团'}}</div>
+      </div>
+      <div class="clear"></div>
+      <!-- <i-cell title="正在拼团的小伙伴" value="更多"></i-cell> -->
+      <i-cell
+        title="正在拼团的小伙伴"
+        value="更多"
+        is-link
+        only-tap-footer
+        :url="'/pages/groupList1/main?pid='+pinkid"
+      ></i-cell>
+      <div v-for="(pink,index) in pinks" :key="index">
+        <div class="serabblePeople">
+          <div class="serabblePeople_Left">
+            <img :src="pink.avatar" alt />
+            <span>{{pink.pname}}</span>
+            <i>{{pink.people}}人团</i>
+          </div>
+          <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div>
+          <div v-else class="serabblePeople_Right">去参团</div>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+      <div class="datail">
+        <p>服务详情</p>
+        <div class="border1px"></div>
+        <span>{{serviceinfo}}</span>
+        <div class="dv"></div>
+        <img
+          :style="{height:comNum[idx]+'px !important' }"
+          :src="val"
+          v-for="(val,idx) in detail_image"
+          :key="idx"
+        />
+      </div>
+      <div class="clear"></div>
+      <div class="datail">
+        <p>参团须知</p>
+        <div class="border1px"></div>
+        <span>{{notice}}</span>
+      </div>
+      <div class="clear"></div>
+      <div class="datail">
+        <p>商家信息</p>
+        <div class="border1px"></div>
+        <p>名称: {{shop_name}}</p>
+        <p>地址: {{address}}</p>
+        <p>电话: {{tel}}</p>
+      </div>
+      <div class="footFix" @click="goToPay">¥{{price}}({{people}}人团)</div>
+      <i-action-sheet
+        :visible="visible1"
+        :actions="actions1"
+        show-cancel
+        @cancel="handleCancel1"
+        @click="handleClickItem"
+      />
+      <van-popup :show="isShows" z-index="9999999">
+        <div style="padding:20px;" class="tanChu">
+          <p>申请获取以下权限</p>
+          <p>获得你的公开信息(昵称，头像等)</p>
+          <button
+            class="bottom"
+            type="primary"
+            lang="zh_CN"
+            size="mini"
+            open-type="getUserInfo"
+            @getuserinfo="bindGetUserInfo"
+          >授权登录</button>
+        </div>
+      </van-popup>
+      <div class="addXiao" v-show="addXiao">
+        <span></span>
+        点击 [添加小程序] , 下次访问更便捷 >
       </div>
     </div>
-
-    <div class="clear"></div>
-    <div class="datail">
-      <p>服务详情</p>
-      <div class="border1px"></div>
-      <span>{{serviceinfo}}</span>
-      <div class="dv"></div>
-      <img
-        :style="{height:comNum[idx]+'px !important' }"
-        :src="val"
-        v-for="(val,idx) in detail_image"
-        :key="idx"
-      />
-    </div>
-    <div class="clear"></div>
-    <div class="datail">
-      <p>参团须知</p>
-      <div class="border1px"></div>
-      <span>{{notice}}</span>
-    </div>
-    <div class="clear"></div>
-    <div class="datail">
-      <p>商家信息</p>
-      <div class="border1px"></div>
-      <p>名称: {{shop_name}}</p>
-      <p>地址: {{address}}</p>
-      <p>电话: {{tel}}</p>
-    </div>
-    <div class="nmvb"></div>
-    <div class="footFix" @click="goToPay">¥{{price}}({{people}}人团)</div>
-    <i-action-sheet
-      :visible="visible1"
-      :actions="actions1"
-      show-cancel
-      @cancel="handleCancel1"
-      @click="handleClickItem"
-    />
-    <div class="addXiao" v-show="addXiao">
-      <span></span>
-      点击 [添加小程序] , 下次访问更便捷 >
+    <div class="foot">
+      <img src="../../../static/img/组 1256@2x.png" alt />
     </div>
   </div>
 </template>
@@ -147,57 +153,63 @@ export default {
       addXiao: false,
       code: NaN,
       serviceinfo: "",
-      pinks: [1, 1, 1, 1, 1],
-      pid: 0,
+      pinks: [],
       productid: 0,
       storeid: 0,
       price: 0,
       pname: "",
       people: 0,
-      comNum: [],
+      current: 0,
       detail_image: [],
+      comNum: [],
       notice: [],
       shop_name: NaN,
       address: NaN,
-      tel: NaN
+      tel: NaN,
+      isShows: true,
+      pageLis: [
+        {
+          name: "确定"
+        }
+      ],
+      pinkid: NaN
     };
   },
   onLoad(options) {
-    this.imgheights = NaN;
-    var that = this;
-    that.pid = options.pinkid;
-    this.$axios
-      .post("routine/Users/combination_detail", {
-        openid: wx.getStorageSync("openid"),
-        id: options.pinkid
-      })
-      .then(function(response) {
-        if (response.data.code == 400) {
-          wx.showToast({
-            title: "该拼团已结束！",
-            icon: "none",
-            duration: 2000
+    console.log(options);
+    this.pinkid = options.scene;
+    //this.pinkid=24;
+    wx.login({
+      success: res => {
+        if (res.code) {
+          wx.request({
+            url: "https://www.meifuyihao.com/index.php/routine/logins/setCode",
+            method: "post",
+            dataType: "json",
+            data: { info: res },
+            success: function(response) {
+              wx.setStorageSync("openid", response.data.openid);
+              wx.setStorageSync("session_key", response.data.session_key);
+            }
           });
-          return;
+        } else {
         }
-        that.serviceinfo = response.data.data.storeInfo.info;
-        that.pinks = response.data.data.pink;
-        that.productid = response.data.data.storeInfo.id;
-        that.storeid = response.data.data.storeInfo.uid;
-        that.price = response.data.data.storeInfo.price;
-        that.pname = response.data.data.storeInfo.pname;
-        that.people = response.data.data.storeInfo.people;
-        that.notice = response.data.data.storeInfo.notice;
-        that.shop_name = response.data.data.storeInfo.shop_name;
-        that.address = response.data.data.storeInfo.address;
-        that.tel = response.data.data.storeInfo.service_tel;
-        var detail_image = response.data.data.storeInfo.detail_image;
-        that.detail_image = detail_image.split(",");
-        var pictures = response.data.data.storeInfo.picture;
-        that.swipers = pictures.split(",");
-        that.imgHeight(that.detail_image);
-      });
+      }
+    });
+    var that = this;
+    if (wx.getStorageSync("pdata")) {
+      this.$axios
+        .post("routine/logins/index", {
+          info: wx.getStorageSync("pdata")
+        })
+        .then(function(response) {
+          that.isShows = false;
+          that.shuju();
+        });
+      that.isShows = false;
+    }
   },
+
   methods: {
     imgHeight(wid) {
       var thar = this;
@@ -244,11 +256,66 @@ export default {
       setTimeout(() => {
         this.addXiao = false;
       }, 5000);
+    },
+    shuju() {
+      this.imgheights = NaN;
+      var that = this;
+      this.$axios
+        .post("routine/Users/combination_detail", {
+          openid: wx.getStorageSync("openid"),
+          id: that.pinkid 
+        })
+        .then(function(response) {
+          if (response.data.code == 400) {
+            wx.showToast({
+              title: "该拼团已结束！",
+              icon: "none",
+              duration: 2000
+            });
+            return;
+          }
+          that.serviceinfo = response.data.data.storeInfo.info;
+          that.pinks = response.data.data.pink;
+          that.productid = response.data.data.storeInfo.id;
+          that.storeid = response.data.data.storeInfo.uid;
+          that.price = response.data.data.storeInfo.price;
+          that.pname = response.data.data.storeInfo.pname;
+          that.people = response.data.data.storeInfo.people;
+          that.notice = response.data.data.storeInfo.notice;
+          that.shop_name = response.data.data.storeInfo.shop_name;
+          that.address = response.data.data.storeInfo.address;
+          that.tel = response.data.data.storeInfo.service_tel;
+          var detail_image = response.data.data.storeInfo.detail_image;
+          that.detail_image = detail_image.split(",");
+          var pictures = response.data.data.storeInfo.picture;
+          that.swipers = pictures;
+          that.imgHeight(that.detail_image);
+        });
+    },
+    bindGetUserInfo(e) {
+      var that = this;
+      var pdata = e.mp.detail;
+      pdata.userInfo = e.mp.detail.userInfo;
+      pdata.iv = encodeURI(e.mp.detail.iv);
+      pdata.encryptedData = e.mp.detail.encryptedData;
+      pdata.session_key = wx.getStorageSync("session_key");
+      wx.setStorageSync("pdata", pdata);
+      this.$axios
+        .post("routine/logins/index", {
+          info: wx.getStorageSync("pdata")
+        })
+        .then(function(response) {
+          that.isShows = false;
+          that.shuju();
+        });
     }
   }
 };
 </script>     
 <style scoped>
+#body {
+  background-color: #ffffff;
+}
 .addXiao {
   color: #000000;
   background-color: #ffffff;
@@ -271,7 +338,7 @@ export default {
 }
 swiper {
   text-align: center !important;
-  height: 37vh;
+  height: 186px;
 }
 swiper image {
   width: 100%;
@@ -282,7 +349,7 @@ swiper image {
   margin-left: 15px;
   padding: 15px 0 10px 0;
 }
-.shopping > div p:nth-child(1) {
+.shopping > div p:nth-child(2) {
   font-size: 15px;
   color: #333333;
   line-height: 22px;
@@ -293,31 +360,41 @@ swiper image {
   color: #e80000;
   line-height: 24px;
 }
-.shopping img {
-  float: right;
-  margin-top: 25px;
-  margin-right: 17px;
+.fenx img {
   width: 25px;
   height: 25px;
 }
+.fenx {
+  height: 50px;
+  padding: 0 21px;
+  background-color: #f35379;
+  color: #ffffff;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .shopping {
+  position: relative;
   overflow: hidden;
 }
 .shopping span {
-  float: left;
   width: 35px;
   height: 15px;
-  border: 1px solid #55556e;
+  border: 1px solid #f35379;
   font-size: 8px;
   text-align: center;
   line-height: 15px;
-  color: #2d2d35;
-  margin-left: 10px;
+  color: #f35379;
+  margin-right: 5px;
+  float: left;
+  margin-bottom: 4px;
 }
 .serabble {
   width: 690rpx;
   height: 138px;
   padding: 12px 15px 15px 15px;
+  position: relative;
 }
 .serabble_play {
   overflow: hidden;
@@ -325,24 +402,30 @@ swiper image {
 .serabble_play span:nth-child(1) {
   font-size: 15px;
   color: #333333ff;
-
   float: left;
 }
-.serabble_play span:nth-child(2) {
+.serabble_play button {
   font-size: 12px;
   color: #ffffffff;
   line-height: 24px;
   text-align: center;
+  padding: 0;
+  text-align: center;
   width: 69px;
   height: 24px;
   border-radius: 30px;
-  background-color: #0086f7ff;
+  background-color: #f35379;
   float: right;
+  z-index: 99999;
 }
 .serabble_list {
   padding: 22px 12px 15px 12px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+.serabble_list div {
+  z-index: 9999999;
 }
 .serabble_list img {
   width: 40px;
@@ -350,6 +433,14 @@ swiper image {
   display: block;
   margin: 0 auto;
   margin-bottom: 10px;
+}
+.borf {
+  border-bottom: 3px solid #f35379;
+  width: 262px;
+  margin-top: -50px;
+  position: absolute;
+  top: 127px;
+  left: 55px;
 }
 .shopping_play .i-cell-text {
   font-size: 15px;
@@ -377,6 +468,7 @@ swiper image {
   line-height: 60px;
 }
 .serabblePeople .serabblePeople_Left i {
+  /* width: 35px; */
   padding: 0px 4px;
   height: 15px;
   border: 1px solid #ea6584;
@@ -389,10 +481,23 @@ swiper image {
 }
 .serabblePeople .serabblePeople_Right {
   font-size: 14px;
-  color: #ea6584;
+  color: #333333;
   float: right;
   margin-right: 15px;
   line-height: 60px;
+}
+.serabblePeople_Right2 {
+  font-size: 12px;
+  color: #ffffff;
+  padding: 0px 17px;
+  border-radius: 24px;
+  background-color: #f35379;
+  float: right;
+  margin-right: 15px;
+  line-height: 60px;
+  height: 24px;
+  line-height: 24px;
+  margin-top: 17px;
 }
 .datail {
   padding: 0 15px 30px 15px;
@@ -421,10 +526,29 @@ swiper image {
   position: fixed;
   bottom: 0;
 }
-.nmvb {
-  height: 25px;
+
+.foot img {
+  display: block;
+  margin: 20px auto;
+  width: 117px;
+  height: 22px;
 }
-.dv {
-  height: 20px;
+.foot {
+  height: 85px;
+}
+
+.tanChu p {
+  font-size: 15px;
+  line-height: 50px;
+  min-width: 250px;
+}
+.tanChu p:nth-child(2) {
+  color: #cccccc;
+}
+.bottom {
+  border-radius: 80rpx;
+  margin-top: 12px;
+  margin-left: 63px;
+  font-size: 35rpx;
 }
 </style>

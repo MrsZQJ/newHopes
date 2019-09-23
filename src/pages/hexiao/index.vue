@@ -9,7 +9,14 @@
       </div>
 
       <div class="border1px" :style="{'margin-top':margintopHeight}"></div>
-
+      <div v-if="ifDiv" class="bod1">
+        <img v-if="ifImg" src="../../../static/img/succ.png" alt="">
+        <img v-else src="../../../static/img/tan.png" alt="">
+        <span v-if="ifImg">核销成功</span>
+        <span v-else>核销码不存在</span>
+        <p>返回拼团</p>
+      </div>
+      <div v-else class="bod2"></div>
       <!--<template v-for="rec in records">
     <div class="box" @click="GoToWriteoff">
       <p>{{rec.pname}}</p>
@@ -30,7 +37,9 @@ export default {
     return {
       //   globalData: ""
       records: [],
-      code: undefined
+      code: undefined,
+      ifImg:true,
+      ifDiv:true
     };
   },
   created() {
@@ -87,6 +96,34 @@ export default {
 </script>
 
 <style scoped>
+.bod1{
+  height: 100vh;
+  text-align: center;
+}
+.bod1 img{
+  width: 78px;
+  height: 78px;
+  display: block;
+  margin: 200px auto;
+  margin-bottom: 0;
+}
+.bod1 span{
+  font-size: 13px;
+  line-height: 36px;
+  color: #333333;
+}
+.bod1 p{
+  width: 235px;
+  height: 31px;
+  display: block;
+  background-color: #F35379;
+  color: #ffffff;
+  border-radius: 31px;
+  font-size: 13px;
+  text-align: center;
+  line-height: 31px;
+  margin: 20px auto;
+}
 .top {
   position: fixed;
   background-color: #ffffff;
@@ -109,7 +146,7 @@ export default {
   color: #ffffff;
   font-size: 13px;
   position: absolute;
-  left: 212px;
+  left: 200px;
   top: 0px;
   z-index: 999999;
   width: 59px;

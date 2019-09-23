@@ -133,7 +133,7 @@ export default {
       this.$axios
         .post("routine/Merchant/pinkingCode", {
           id: pid,
-          page: "pages/authorization/main"
+          page: "pages/groupDetail/main"
         })
         .then(function(response) {
           that.pname = response.data.data.pname;

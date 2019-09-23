@@ -32,7 +32,7 @@
       <div class="serabble">
         <div class="serabble_play">
           <span>拼团玩法</span>
-          <button @click="fghj">个人中心</button>
+          <button @click="goToMyself">个人中心</button>
         </div>
         <div class="borf"></div>
         <div class="serabble_list">
@@ -176,6 +176,21 @@ export default {
         that.imgHeight(that.detail_image);
       });
   },
+  //转发
+  onShareAppMessage: function(res) {
+    console.log(res);
+    
+    var that = this;
+    if (res.from === "button") {
+    }
+    return {
+      title: "转发",
+      path: "/pages/groupDetail/main?scene=" + that.pid,
+      success: function(res) {
+        console.log("成功", res);
+      }
+    };
+  },
   methods: {
     imgHeight(wid) {
       var thar = this;
@@ -187,7 +202,8 @@ export default {
             thar.comNum.push(375 / res.width * res.height);
           }
         });
-      }
+      } 
+      
     },
     getLogin() {
       wx.checkSession({
@@ -233,11 +249,6 @@ export default {
       setTimeout(() => {
         this.addXiao = false;
       }, 5000);
-    },
-    fghj() {
-      wx.navigateTo({
-        url: "/pages/PersonalCenter/main"
-      });
     }
   }
 };

@@ -81,13 +81,13 @@
         title="美容院名称"
         type="number"
         placeholder="请美人院名称"
-        @change="number"
+        @change="shopnm"
         maxlength="11"
       />
       <div class="border1px"></div>
-      <i-input right title="地址位置" placeholder="请输入详细地址" @change="shopnm" maxlength="20" />
+      <i-input right title="地址位置" placeholder="请输入详细地址" @change="addr" maxlength="20" />
       <div class="border1px"></div>
-      <i-input right title="客服电话" placeholder="请输入客服电话" @change="addr" maxlength="20" />
+      <i-input right title="客服电话" placeholder="请输入客服电话" @change="tel" maxlength="20" />
       <div class="border1px"></div>
       <!-- <i-input right title="客服电话" placeholder="请输入客服电话" @change="tel" maxlength="20" />
       <div class="border1px"></div>-->
@@ -126,7 +126,7 @@ export default {
     return {
       cantuanxuzhi: "",
       namePingTuan: "",
-      num: 0,
+      num: '',
       address: "",
       telNalue: "",
       minDate1: new Date().getTime(),
@@ -142,8 +142,10 @@ export default {
       topimgList: [],
       fuwuimgList: [],
       array: [1], //默认显示一个
-      inputVal1: [], //所有input的内容
-      inputVal2: []
+      inputVal1: [""], //所有input的内容
+      inputVal2: [""],
+      numJiSuan1:1,
+      numJiSuan2:1,
     };
   },
   methods: {
@@ -320,9 +322,6 @@ export default {
         return;
       }
       if (
-        this.num == 0 ||
-        this.price == 0 ||
-        this.people == 0 ||
         this.telNalue == ""
       ) {
         wx.showToast({
@@ -340,35 +339,58 @@ export default {
         });
         return false;
       }
-
-      this.$axios
-        .post("routine/Store/addPink", {
-          sid: wx.getStorageSync("sid"),
-          pname: this.namePingTuan,
-          address: that.address,
-          num: this.num,
-          price: this.price,
-          people: this.people,
-          add_time: this.currentDate1,
-          stop_time: this.currentDate2,
-          detail_image: that.fuwuimgList.join(),
-          picture: that.topimgList.join(),
-          shop_name: that.shopname,
-          notice: this.cantuanxuzhi,
-          info: this.info,
-          service_tel: this.telNalue,
-          directions: " "
-        })
-        .then(function(response) {
+      var obj = {
+        sid: wx.getStorageSync("sid"),
+        pname: this.namePingTuan,
+        address: that.address,
+        // price: this.price,
+        // people: this.people,
+        add_time: this.currentDate1,
+        stop_time: this.currentDate2,
+        detail_image: that.fuwuimgList.join(),
+        picture: that.topimgList.join(),
+        shop_name: that.shopname,
+        notice: this.cantuanxuzhi,
+        info: this.info,
+        service_tel: this.telNalue,
+        directions: ""
+      };
+      for (var i = 0; i < this.inputVal1.length; i++) {
+        if (this.inputVal1[i] == "") {
           wx.showToast({
-            title: response.data.msg,
+            title: "人数不能为0!",
             icon: "none",
             duration: 1000
           });
-          wx.navigateTo({
-            url: "/pages/pingTuan/main"
+          return;
+        }
+        obj[`people_${i + 1}`] = this.inputVal1[i];
+      }
+      for (var i = 0; i < this.inputVal2.length; i++) {
+        if (this.inputVal2[i] == "") {
+          wx.showToast({
+            title: "价格不能为0!",
+            icon: "none",
+            duration: 1000
           });
+          return;
+        }
+        obj[`price_${i + 1}`] = this.inputVal2[i];
+      }
+
+      this.$axios.post("routine/Store/addPink", obj).then(function(response) {
+        wx.showToast({
+          title: response.data.msg,
+          icon: "none",
+          duration: 1000
         });
+        if(response.data.code==400){
+          return
+        }
+        wx.navigateTo({
+          url: "/pages/pingTuan/main"
+        });
+      });
     },
     //点击取消关闭开始时间选择框
     inStartClose() {
@@ -387,10 +409,18 @@ export default {
     },
     // 更新用户开始时间选择
     onInputStart(event) {
+      if(this.numJiSuan1==1){
+        this.numJiSuan1+=1
+        return
+      }
       this.currentDate1 = time.formatTime(event.mp.detail);
     },
     //更新用户结束时间选择
     onInputEnd(event) {
+      if(this.numJiSuan2==1){
+        this.numJiSuan2+=1
+        return
+      }
       this.currentDate2 = time.formatTime(event.mp.detail);
     },
     //点击遮罩层关闭开始时间选择框
@@ -410,7 +440,15 @@ export default {
       this.showEndTime = true;
     },
     addBox() {
-      this.array.push(1);
+      if (this.array.length < 3) {
+        this.array.push(1);
+      } else {
+        wx.showToast({
+          title: "最多三人团",
+          icon: "none",
+          duration: 1000
+        });
+      }
     },
     removed(e) {
       var nowidx = e.currentTarget.dataset.eventid.split("_")[1];

@@ -38,12 +38,13 @@ export default {
   },
   methods: {
     handleClick() {
-      if (this.yan_num1 != this.ma) {
+      if (this.yan_num != this.ma) {
         $Toast({
           content: "验证码错误!",
           icon: "prompt",
           mask: false
         });
+        return
       }
       wx.navigateTo({
         url: "/pages/resetPassword/main?phone=" + this.phone

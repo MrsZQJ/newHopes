@@ -1,8 +1,10 @@
 <template>
   <div id="body">
     <div class="Commodity_Information">
+      <img src="../../../static/img/jihui.png" alt="">
       <div class="CommodityText">
         <p>{{pname}}</p>
+        <p>产品信息产品信息</p>
         <p>¥{{price}}</p>
       </div>
     </div>
@@ -109,7 +111,6 @@ export default {
       wx.request({
         url: "https://www.meifuyihao.com/index.php/routine/Users/create_order",
         method: "POST",
-        //header: header,
         data: {
           openid: wx.getStorageSync("openid"),
           payType: "weixin",
@@ -227,15 +228,15 @@ export default {
 
 <style scoped>
 .Commodity_Information {
-  height: 70px;
+  /* height: 70px; */
   display: flex;
   padding-left: 25px;
 }
 .Commodity_Information img {
-  width: 42px;
-  height: 42px;
-  margin-left: 15px;
-  margin-top: 14px;
+  width: 80px;
+  height: 80px;
+  /* margin-left: 15px; */
+  margin-top: 10px;
   margin-right: 10px;
 }
 .CommodityText {
@@ -247,6 +248,11 @@ export default {
   color: #333333;
 }
 .CommodityText p:nth-child(2) {
+  color: #999999;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.CommodityText p:nth-child(3) {
   color: #e80000;
   font-size: 20px;
 }

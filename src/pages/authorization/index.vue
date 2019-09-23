@@ -24,8 +24,7 @@ export default {
   },
   created() {},
   onLoad(options) {
-    
-    this.pinkid = options.scene
+    this.pinkid = options.scene;
     console.log(this.pinkid);
     //this.pinkid=24;
     wx.login({
@@ -76,7 +75,7 @@ export default {
         })
         .then(function(response) {
           console.log(that.pinkid);
-          
+
           wx.navigateTo({
             url: "/pages/groupDetail/main?pinkid=" + that.pinkid
           });
