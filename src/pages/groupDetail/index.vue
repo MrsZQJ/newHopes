@@ -103,7 +103,14 @@
         <p>地址: {{address}}</p>
         <p>电话: {{tel}}</p>
       </div>
-      <div class="footFix" @click="goToPay">¥{{price}}({{people}}人团)</div>
+      <div class="flex">
+        <div
+          v-for="(itm,ids) in tuan"
+          class="footFix"
+          @click="goToPay"
+          :key="ids"
+        >¥{{itm.pri}}({{itm.peo}}人团)</div>
+      </div>
       <i-action-sheet
         :visible="visible1"
         :actions="actions1"
@@ -172,13 +179,14 @@ export default {
           name: "确定"
         }
       ],
-      pinkid: NaN
+      pinkid: NaN,
+      tuan: [],
+      dui: false
     };
   },
   onLoad(options) {
-    console.log(options);
     this.pinkid = options.scene;
-    //this.pinkid=24;
+    this.dui = false;
     wx.login({
       success: res => {
         if (res.code) {
@@ -235,6 +243,14 @@ export default {
       });
     },
     goToPay() {
+      if (this.dui) {
+        wx.showToast({
+          title: "该拼团已结束！",
+          icon: "none",
+          duration: 2000
+        });
+        return false;
+      }
       wx.navigateTo({
         url:
           "/pages/pay/main?storeid=" +
@@ -263,7 +279,7 @@ export default {
       this.$axios
         .post("routine/Users/combination_detail", {
           openid: wx.getStorageSync("openid"),
-          id: that.pinkid 
+          id: that.pinkid
         })
         .then(function(response) {
           if (response.data.code == 400) {
@@ -274,13 +290,34 @@ export default {
             });
             return;
           }
+          that.swipers = [];
+          that.tuan = [];
           that.serviceinfo = response.data.data.storeInfo.info;
-          that.pinks = response.data.data.pink;
           that.productid = response.data.data.storeInfo.id;
           that.storeid = response.data.data.storeInfo.uid;
-          that.price = response.data.data.storeInfo.price;
+          var cc = [];
+          for (var j = 1; j <= 3; j++) {
+            if (
+              !response.data.data.storeInfo["price_" + j] ||
+              response.data.data.storeInfo["price_" + j] == 0
+            ) {
+              break;
+            }
+            cc.push(+response.data.data.storeInfo["price_" + j]);
+          }
+          that.price = Math.min.apply(null, cc);
           that.pname = response.data.data.storeInfo.pname;
-          that.people = response.data.data.storeInfo.people;
+          for (var i = 1; i <= 3; i++) {
+            var obj = {};
+            if (response.data.data.storeInfo["price_" + i] == that.price) {
+              that.people = response.data.data.storeInfo["people_" + i];
+            }
+            obj.peo = response.data.data.storeInfo["people_" + i];
+            obj.pri = response.data.data.storeInfo["price_" + i];
+            if (response.data.data.storeInfo["people_" + i]) {
+              that.tuan.push(obj);
+            }
+          }
           that.notice = response.data.data.storeInfo.notice;
           that.shop_name = response.data.data.storeInfo.shop_name;
           that.address = response.data.data.storeInfo.address;
@@ -290,6 +327,28 @@ export default {
           var pictures = response.data.data.storeInfo.picture;
           that.swipers = pictures;
           that.imgHeight(that.detail_image);
+          that.zhenPing();
+        });
+    },
+    zhenPing() {
+      var that = this;
+      this.$axios
+        .post("routine/Users/participate_user", {
+          openid: wx.getStorageSync("openid"),
+          id: that.pinkid,
+          limit: 6
+        })
+        .then(function(res) {
+          if (res.data.data.status == 1) {
+            wx.showToast({
+              title: "该拼团已结束！",
+              icon: "none",
+              duration: 2000
+            });
+            that.dui = true;
+            return;
+          }
+          console.log(res);
         });
     },
     bindGetUserInfo(e) {
@@ -425,7 +484,7 @@ swiper image {
   align-items: center;
 }
 .serabble_list div {
-  z-index: 9999999;
+  z-index: 99;
 }
 .serabble_list img {
   width: 40px;
@@ -515,16 +574,24 @@ swiper image {
 .datail img {
   width: 100% !important;
 }
+.flex {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 375px;
+  height: 49px;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0;
+  background-image: url("../../../static/img/bgcc.png");
+  background-size: 100%;
+}
 .footFix {
   color: #ffffff;
-  width: 750rpx;
   height: 49px;
-  background-color: #0086f8;
   text-align: center;
   line-height: 49px;
   font-size: 15px;
-  position: fixed;
-  bottom: 0;
+  flex-grow: 1;
 }
 
 .foot img {

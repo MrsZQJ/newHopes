@@ -24,7 +24,8 @@
     "pages/paySuccess/main",
     "pages/pay/main",
     "pages/groupList/main",
-    "pages/PersonalCenter/main"
+    "pages/PersonalCenter/main",
+    "pages/resetEdit/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

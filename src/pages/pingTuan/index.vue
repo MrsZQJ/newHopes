@@ -13,16 +13,16 @@
         <div class="gouWuJie">
           <img src="../../../static/img/lb.png" alt />
           <p>{{pink.pname}}</p>
-          <span v-if="pink.pink_ok==0">进行中</span>
-          <span v-else-if="pink.pink_ok==1">未开始</span>
+          <span v-if="pink.sta==2">进行中</span>
+          <span v-else-if="pink.sta==1">未开始</span>
           <span v-else>已结束</span>
         </div>
         <div class="moneyDetail">
           <div class="moneyDetailLeft" @click="GoTogroupDetail(pink.id)">
-            <p>
+            <p v-for="(obj,idx) in pink.arr" :key="idx">
               <span>团</span>
-              <span>{{pink.people}}人团</span>
-              <span>¥{{pink.price}}</span>
+              <span>{{obj.people}}人团</span>
+              <span>¥{{obj.price}}</span>
             </p>
           </div>
           <div class="moneyDetailRight">
@@ -36,13 +36,13 @@
             </div>
           </div>
           <div class="moneyDetailBot">
-            <block v-if="pink.pink_ok==0">
+            <block v-if="pink.sta==2">
               <p @click="haibao(pink.id)">生成海报</p>
               <p @click="GoToGroupRecords">拼团记录</p>
               <p>立即成团</p>
             </block>
-            <block v-else-if="pink.pink_ok==1">
-              <p>重新编辑</p>
+            <block v-else-if="pink.sta==1">
+              <p @click="resetEdit(pink.id)">重新编辑</p>
               <p @click="haibao(pink.id)">生成海报</p>
               <p @click="GoToGroupRecords">拼团记录</p>
             </block>
@@ -55,12 +55,7 @@
         </div>
         <div class="clear"></div>
       </div>
-      <img
-        @click="NewPingTuan"
-        src="../../../static/img/xj_icon@2x.png"
-        class="NewJia"
-        alt
-      />
+      <img @click="NewPingTuan" src="../../../static/img/xj_icon@2x.png" class="NewJia" alt />
       <span @click="NewPingTuan" class="NewJian">新建拼团</span>
       <mp-dialog
         title="请选择模板"
@@ -112,13 +107,41 @@ export default {
   onLoad() {
     var that = this;
     that.isShow = false;
+    var times = (new Date()).valueOf();
     that.$axios
       .post("routine/Store/pink_list", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
         that.pinks = response.data.data;
+        for (var i = 0; i < that.pinks.length; i++) {
+          that.pinks[i].arr = [];
+          for (var j = 1; j <= 3; j++) {
+            var obj = {};
+            if (!that.pinks[i]["people_" + j]) {
+              break;
+            }
+            obj.people = that.pinks[i]["people_" + j];
+            obj.price = that.pinks[i]["price_" + j];
+            that.pinks[i].arr.push(obj);
+          }
+          // console.log(new Date(parseInt(that.pinks[i].add_time) * 1000).toLocaleString().substr(0,17),that.pinks[i].add_time);
+          // console.log(new Date(parseInt(times)).toLocaleString().substr(0,17),times);
+          
+          if (that.pinks[i].add_time*1000 > times) {
+            that.pinks[i].sta = 1;
+          } else if (that.pinks[i].stop_time*1000 < times) {
+            that.pinks[i].sta = 3;
+          } else {
+            that.pinks[i].sta = 2;
+          }
+        }
       });
   },
   methods: {
+    resetEdit(id){
+      wx.navigateTo({
+        url: '/pages/resetEdit/main',
+      })
+    },
     tapDialogButton(e) {
       if (e.mp.detail.index == 0) {
         this.isShow = false;
@@ -137,8 +160,23 @@ export default {
         })
         .then(function(response) {
           that.pname = response.data.data.pname;
-          that.price = response.data.data.price;
-          that.people = response.data.data.people;
+          var cc = [];
+          for (var j = 1; j <= 3; j++) {
+            if (
+              !response.data.data["price_" + j] ||
+              response.data.data["price_" + j] == 0
+            ) {
+              break;
+            }
+            cc.push(+response.data.data["price_" + j]);
+          }
+          that.price = Math.min.apply(null, cc);
+          for (var i = 1; i <= 3; i++) {
+            var obj = {};
+            if (response.data.data["price_" + i] == that.price) {
+              that.people = response.data.data["people_" + i];
+            }
+          }
           wx.showLoading({
             title: "海报生成中...",
             mask: true
@@ -272,7 +310,7 @@ export default {
   padding: 6px 0;
   /* border: 1px solid #cccccc; */
   border-radius: 31px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 .searchBor i-icon {
   margin-left: 15px;
@@ -287,7 +325,7 @@ export default {
   margin-top: -3px;
 }
 .like {
-  border-right-color: #e4e4e4 !important;
+  background-color: #e4e4e4 !important;
 }
 .searchBor div {
   width: 47px;

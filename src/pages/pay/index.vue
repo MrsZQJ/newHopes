@@ -4,7 +4,7 @@
       <img src="../../../static/img/jihui.png" alt="">
       <div class="CommodityText">
         <p>{{pname}}</p>
-        <p>产品信息产品信息</p>
+        <p></p>
         <p>¥{{price}}</p>
       </div>
     </div>
@@ -37,7 +37,7 @@
     <div class="pay_footer">
       <div class="footerLeft">
         <p>
-          <span>&nbsp;{{price}}</span>
+          <span><span style="color:#333333;">付款</span>¥{{price}}</span>
         </p>
       </div>
       <div class="footerRight" @click="paySuccess" :style="{backgroundColor:changColor +'!important'}">立即支付</div>
@@ -59,6 +59,7 @@ export default {
     };
   },
   onLoad(options) {
+    console.log(options);
     this.price = options.price;
     this.sid = options.storeid;
     this.pname = options.pname;
@@ -265,6 +266,7 @@ export default {
 .footerLeft {
   width: 255px;
   font-size: 15px;
+  line-height: 49px;
   overflow: hidden;
   float: left;
 }
@@ -277,7 +279,7 @@ export default {
   color: #e80000;
 }
 .footerRight {
-  background-color: #0086f8;
+  background-color: #f35379;
   color: #ffffff;
   width: 120px;
   height: 49px;
