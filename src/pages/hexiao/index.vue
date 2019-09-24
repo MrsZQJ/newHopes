@@ -4,7 +4,7 @@
       <div class="top" :style="{'top':topHeight}">
         <i-icon @click="GoBack" type="return" size="24" />
         <!-- <i-input title="<" type="number" placeholder="请输入收货人姓名" /> -->
-        <input type="number" placeholder="请输入核销码" v-model="code" />
+        <input type="number" focus placeholder="请输入核销码" v-model="code" />
         <span @click="hexiao">核销</span>
       </div>
 
@@ -14,7 +14,7 @@
         <img v-else src="../../../static/img/tan.png" alt="">
         <span v-if="ifImg">核销成功</span>
         <span v-else>核销码不存在</span>
-        <p>返回拼团</p>
+        <p @click="GoBack">返回拼团</p>
       </div>
       <div v-else class="bod2"></div>
       <!--<template v-for="rec in records">
@@ -39,12 +39,9 @@ export default {
       records: [],
       code: undefined,
       ifImg:true,
-      ifDiv:true
+      ifDiv:false
     };
-  },
-  created() {
-    // this.topHeight();
-  },
+  }, 
   computed: {
     topHeight() {
       var aaa = "";
@@ -65,20 +62,31 @@ export default {
       return bbb;
     }
   },
-  onLoad() {},
+  onLoad() {
+    this.ifDiv=false
+    this.ifImg=true
+  },
   methods: {
     hexiao() {
+      var that=this
       this.$axios
         .post("routine/Store/writeCode", {
           sid: wx.getStorageSync("sid"),
           code: this.code
         })
         .then(function(response) {
-          wx.showToast({
-            title: response.data.msg,
-            icon: "none",
-            duration: 1000
-          });
+          // wx.showToast({
+          //   title: response.data.msg,
+          //   icon: "none",
+          //   duration: 1000
+          // });
+          if(response.data.msg=='核销码不存在'){
+            that.ifDiv=true
+            that.ifImg=false
+          }else{
+            that.ifDiv=true
+            that.ifImg=true
+          }
         });
     },
     GoBack() {
@@ -97,7 +105,7 @@ export default {
 
 <style scoped>
 .bod1{
-  height: 100vh;
+  /* height: 100vh; */
   text-align: center;
 }
 .bod1 img{

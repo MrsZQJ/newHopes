@@ -9,22 +9,22 @@
     </div>
     <div v-for="(order,index) in records" :key="index">
       <div class="recordsList">
-        <div class="recordsList_left" @click="GoTogroupDetail(order.pid)">
+        <div class="recordsList_left">
           <img :src="order.avatar" alt />
           <div>
             <p>{{order.user_name}}</p>
             <p>{{order.phone}}</p>
             <p>
               <span>{{order.people}}人团</span> |
-              <span>已参与{{order.total_num}}人</span>
+              <span>已参与{{order.count_people}}人</span>
             </p>
             <p>2019-09-09  12:20:37</p>
           </div>
         </div>
         <div class="recordsListRight">
           <div>
-            <i>{{order.is_shop==1?'未到店':'已到店'}}</i>
-            <i>{{order.k_id==1?'团长':'团员'}}</i>
+            <i>{{order.is_shop==0?'未到店':'已到店'}}</i>
+            <!-- <i>{{order.k_id==0?'团长':'团员'}}</i> -->
           </div>
           <img
             @click="CallPhone(index)"
