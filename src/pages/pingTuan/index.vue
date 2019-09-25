@@ -39,7 +39,7 @@
             <block v-if="pink.sta==2">
               <p @click="haibao(pink.id)">生成海报</p>
               <p @click="GoToGroupRecords">拼团记录</p>
-              <p>立即成团</p>
+              <!-- <p>立即成团</p> -->
             </block>
             <block v-else-if="pink.sta==1">
               <p @click="resetEdit(pink.id)">重新编辑</p>
@@ -49,7 +49,7 @@
             <block v-else>
               <p @click="haibao(pink.id)">生成海报</p>
               <p @click="GoToGroupRecords">拼团记录</p>
-              <p class="like">立即成团</p>
+              <!-- <p class="like">立即成团</p> -->
             </block>
           </div>
         </div>

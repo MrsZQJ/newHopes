@@ -100,8 +100,8 @@ export default {
       });
   },
   methods: {
-    iptChan() {
-      if (this.available < this.extractprice) {
+    iptChan(e) {
+      if (+this.available < +this.extractprice) {
         wx.showToast({
           title: "可用余额不足",
           icon: "none",
@@ -131,7 +131,7 @@ export default {
         return;
       }
 
-      if (that.extractprice == 0 || that.extractprice == undefined) {
+      if (+that.extractprice == 0 || that.extractprice == undefined) {
         wx.showToast({
           title: "提现金额为0",
           icon: "none",
@@ -139,7 +139,7 @@ export default {
         });
         return;
       }
-      if (that.extractprice > that.available) {
+      if (+that.extractprice > +that.available) {
         wx.showToast({
           title: "余额不足",
           icon: "none",

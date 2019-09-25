@@ -58,15 +58,15 @@
       <div class="clear"></div>
       <i-cell title="正在拼团的小伙伴" value="更多"></i-cell>
 
-      <div v-for="(pink,index) in pinks" :key="index">
+      <div v-for="(pink,index) in pinks.users" :key="index">
         <div class="serabblePeople">
           <div class="serabblePeople_Left">
-            <img :src="pink.avatar" alt />
-            <span>{{pink.pname}}</span>
-            <i>{{pink.people}}人团</i>
+            <img :src="pink.headimgurl" alt />
+            <span>{{pink.nickname}}</span>
+            <i>{{pinks.remain}}人团</i>
           </div>
-          <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div>
-          <div v-else class="serabblePeople_Right">去参团</div>
+          <!-- <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div> -->
+          <div class="serabblePeople_Right">去参团</div>
         </div>
       </div>
       <div class="clear"></div>
@@ -152,7 +152,8 @@ export default {
       shop_name: NaN,
       address: NaN,
       tel: NaN,
-      tuan: []
+      tuan: [],
+      dui: false
     };
   },
   created() {
@@ -170,10 +171,12 @@ export default {
         that.swipers = [];
         that.tuan = [];
         that.serviceinfo = response.data.data.storeInfo.info;
-        that.pinks = response.data.data.pink;
         var cc = [];
         for (var j = 1; j <= 3; j++) {
-          if (!response.data.data.storeInfo["price_" + j]||response.data.data.storeInfo["price_" + j]==0) {
+          if (
+            !response.data.data.storeInfo["price_" + j] ||
+            response.data.data.storeInfo["price_" + j] == 0
+          ) {
             break;
           }
           cc.push(+response.data.data.storeInfo["price_" + j]);
@@ -201,12 +204,11 @@ export default {
         that.swipers = pictures.split(",");
         that.detail_image = detail_image.split(",");
         that.imgHeight(that.detail_image);
+        that.zhenPing();
       });
   },
   //转发
   onShareAppMessage: function(res) {
-    console.log(res);
-
     var that = this;
     if (res.from === "button") {
     }
@@ -219,6 +221,27 @@ export default {
     };
   },
   methods: {
+    zhenPing() {
+      var that = this;
+      this.$axios
+        .post("routine/Store/participate_user", {
+          id: that.pid,
+          limit: 6
+        })
+        .then(function(res) {
+          if (res.data.data.status == 1) {
+            wx.showToast({
+              title: "该拼团已结束！",
+              icon: "none",
+              duration: 2000
+            });
+            that.dui = true;
+            return;
+          }
+          that.pinks = res.data.data;
+          console.log(that.pinks);
+        });
+    },
     imgHeight(wid) {
       var thar = this;
       thar.comNum = [];
@@ -392,7 +415,7 @@ swiper image {
   align-items: center;
 }
 .serabble_list div {
-  z-index: 9999999;
+  z-index: 99;
 }
 .serabble_list img {
   width: 40px;
@@ -447,11 +470,17 @@ swiper image {
   margin-top: 20px;
 }
 .serabblePeople .serabblePeople_Right {
-  font-size: 14px;
-  color: #333333;
+  color: #ffffff;
   float: right;
   margin-right: 15px;
-  line-height: 60px;
+  width: 69px;
+  height: 24px;
+  background-color: #f35379;
+  font-size: 12px;
+  text-align: center;
+  line-height: 24px;
+  margin-top: 19px;
+  border-radius: 24px;
 }
 .serabblePeople_Right2 {
   font-size: 12px;
@@ -490,12 +519,12 @@ swiper image {
   justify-content: space-between;
   position: fixed;
   bottom: 0;
+  background-image: url("../../../static/img/bgcc.png");
+  background-size: 100%;
 }
 .footFix {
   color: #ffffff;
   height: 49px;
-  background-image: url("../../../static/img/bgcc.png");
-  background-size: 100%;
   text-align: center;
   line-height: 49px;
   font-size: 15px;

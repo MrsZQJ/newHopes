@@ -55,7 +55,8 @@ export default {
       sid: 0,
       price: 0,
       pname: "",
-      changColor:'#0086f8'
+      changColor:'#0086f8',
+      people:NaN
     };
   },
   onLoad(options) {
@@ -63,13 +64,15 @@ export default {
     this.price = options.price;
     this.sid = options.storeid;
     this.pname = options.pname;
+    this.people = options.people;
     var that = this;
     this.$axios
       .post("routine/Users/now_buy", {
         openid: wx.getStorageSync("openid"),
         cartNum: 1,
         productId: options.productid,
-        price: that.price
+        price: that.price,
+        people:that.people
       })
       .then(function(response) {
         if (response.data.code == 400) {

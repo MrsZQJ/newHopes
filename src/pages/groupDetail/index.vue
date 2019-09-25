@@ -64,15 +64,15 @@
         only-tap-footer
         :url="'/pages/groupList1/main?pid='+pinkid"
       ></i-cell>
-      <div v-for="(pink,index) in pinks" :key="index">
+      <div v-for="(pink,index) in pinks.users" :key="index">
         <div class="serabblePeople">
           <div class="serabblePeople_Left">
-            <img :src="pink.avatar" alt />
-            <span>{{pink.pname}}</span>
-            <i>{{pink.people}}人团</i>
+            <img :src="pink.headimgurl" alt />
+            <span>{{pink.nickname}}</span>
+            <i>{{pinks.remain}}人团</i>
           </div>
-          <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div>
-          <div v-else class="serabblePeople_Right">去参团</div>
+          <!-- <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div> -->
+          <div class="serabblePeople_Right">去参团</div>
         </div>
       </div>
 
@@ -107,7 +107,7 @@
         <div
           v-for="(itm,ids) in tuan"
           class="footFix"
-          @click="goToPay"
+          @click="goToPay(ids,itm.pri)"
           :key="ids"
         >¥{{itm.pri}}({{itm.peo}}人团)</div>
       </div>
@@ -189,6 +189,8 @@ export default {
     this.dui = false;
     wx.login({
       success: res => {
+        console.log(res);
+        
         if (res.code) {
           wx.request({
             url: "https://www.meifuyihao.com/index.php/routine/logins/setCode",
@@ -242,7 +244,7 @@ export default {
         url: "/pages/PersonalCenter/main"
       });
     },
-    goToPay() {
+    goToPay(peo,pri) {
       if (this.dui) {
         wx.showToast({
           title: "该拼团已结束！",
@@ -258,9 +260,11 @@ export default {
           "&productid=" +
           this.productid +
           "&price=" +
-          this.price +
+          pri +
           "&pname=" +
-          this.pname
+          this.pname+
+          "&people=" +
+          (peo+1)
       });
     },
     handleClickItem(e) {
@@ -348,7 +352,9 @@ export default {
             that.dui = true;
             return;
           }
-          console.log(res);
+          that.pinks=res.data.data
+          console.log(that.pinks);
+          
         });
     },
     bindGetUserInfo(e) {
@@ -539,11 +545,17 @@ swiper image {
   margin-top: 20px;
 }
 .serabblePeople .serabblePeople_Right {
-  font-size: 14px;
-  color: #333333;
+  color: #ffffff;
   float: right;
   margin-right: 15px;
-  line-height: 60px;
+  width: 69px;
+  height: 24px;
+  background-color: #F35379;
+  font-size: 12px;
+  text-align: center;
+  line-height: 24px;
+  margin-top: 19px;
+  border-radius: 24px;
 }
 .serabblePeople_Right2 {
   font-size: 12px;
