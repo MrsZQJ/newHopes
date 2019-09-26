@@ -1,7 +1,7 @@
 <template>
   <div id="body">
     <div class="touxiang">
-      <img src="https://www.meifuyihao.com/public/uploads/images/user.png" alt />
+      <img src="../../../static/img/logo.jpg" alt />
       <span>{{name}}</span>
     </div>
     <div class="middle">
@@ -12,13 +12,13 @@
         </navigator>
       </div>
       <div class="box">
-        <navigator url="/pages/tixianDetail/main">
+        <navigator url="/pages/tixianDetail/main?tixian=0">
           <p>{{extracting}}</p>
           <span>提现中(笔)</span>
         </navigator>
       </div>
       <div class="box">
-        <navigator url="/pages/tixianDetail/main">
+        <navigator url="/pages/tixianDetail/main?tixian=2">
           <p>{{extracted}}</p>
           <span>提现成功</span>
         </navigator>

@@ -60,7 +60,6 @@ export default {
     };
   },
   onLoad(options) {
-    console.log(options);
     this.price = options.price;
     this.sid = options.storeid;
     this.pname = options.pname;

@@ -1,13 +1,14 @@
 <template>
   <div id="body">
     <div v-for="(pink,index) in pinks" :key="index">
-      <div class="serabblePeople">
+      <div class="serabblePeople" v-if="pink.users.length!=0">
         <div class="serabblePeople_Left">
-          <img :src="pink.avatar" alt />
-          <span>{{pink.pname}}</span>
+          <img :src="pink.users[0].headimgurl" alt />
+          <span>{{pink.users[0].nickname}}</span>
           <i>{{pink.people}}人团</i>
+          <p>还差{{pink.remain}}人拼成</p>
         </div>
-        <div class="serabblePeople_Right">{{pink.status==2?'已成团':'未成团'}}</div>
+        <div class="serabblePeople_Right">{{pink.status==0?'未成团':'已成团'}}</div>
       </div>
       <div class="border1px"></div>
     </div>
@@ -17,20 +18,18 @@
 export default {
   data() {
     return {
-      pinks: []
+      pinks: [],
+      num:0
     };
   },
   onLoad(options) {
     var that = this;
-    this.$axios
-      .post("routine//Users/combination_list", {
-        openid: wx.getStorageSync("openid"), 
-        id: options.pid
-        // id: 43
-      })
-      .then(function(response) {
-        that.pinks = response.data.data.pink;        
-      });
+    that.$axios.post("routine/Store/participate_user", {
+      id: options.pid,
+      limit: 0
+    }).then(function(res){
+      that.pinks = res.data.data;
+    })
   }
 };
 </script>     
@@ -67,6 +66,14 @@ export default {
   color: #ea6584;
   margin-left: 10px;
   margin-top: 20px;
+}
+.serabblePeople .serabblePeople_Left p{
+  position: absolute;
+  color: #999999;
+  font-size: 14px;
+  left: 67%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
 }
 .serabblePeople .serabblePeople_Right {
   font-size: 14px;

@@ -50,7 +50,6 @@ export default {
       .post("routine/Store/pink_order_list", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
         that.records = response.data.data;
-        console.log(response);
         
       });
   },

@@ -402,28 +402,30 @@ export default {
       this.showEndTime = false;
     },
     // 关闭时间选择框
-    closeTimeChange() {
+    closeTimeChange(event) {
       this.showStartTime = false;
-    },
-    closeTimeChange2() {
-      this.showEndTime = false;
-    },
-    // 更新用户开始时间选择
-    onInputStart(event) {
-      if(this.numJiSuan1==1){
-        this.numJiSuan1+=1
-        return
-      }
       this.currentDate1 = time.formatTime(event.mp.detail);
     },
-    //更新用户结束时间选择
-    onInputEnd(event) {
-      if(this.numJiSuan2==1){
-        this.numJiSuan2+=1
-        return
-      }
+    closeTimeChange2(event) {
+      this.showEndTime = false;
       this.currentDate2 = time.formatTime(event.mp.detail);
     },
+    // 更新用户开始时间选择
+    // onInputStart(event) {
+    //   if(this.numJiSuan1==1){
+    //     this.numJiSuan1+=1
+    //     return
+    //   }
+    //   this.currentDate1 = time.formatTime(event.mp.detail);
+    // },
+    //更新用户结束时间选择
+    // onInputEnd(event) {
+    //   if(this.numJiSuan2==1){
+    //     this.numJiSuan2+=1
+    //     return
+    //   }
+    //   this.currentDate2 = time.formatTime(event.mp.detail);
+    // },
     //点击遮罩层关闭开始时间选择框
     onStartClose(e) {
       this.showStartTime = false;

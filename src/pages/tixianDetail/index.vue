@@ -1,6 +1,6 @@
 <template>
   <div id="body">
-    <div v-for="order in records" :key="order.id">
+    <div v-for="order in recordsb" :key="order.id">
       <div class="box">
         <div class="boxLeft">
           <p>美哒哒体验店</p>
@@ -9,7 +9,10 @@
         </div>
         <div class="boxRight">
           <p>+{{order.extract_price}}</p>
-          <p>提现成功</p>
+          <!-- <p>{{order.status==0?'审核中''提现成功'}}</p> -->
+          <p v-if="order.status==0">审核中</p>
+          <p v-else-if="order.status==-1">未通过</p>
+          <p v-else>提现成功</p>
         </div>
       </div>
       <div class="border1px"></div>
@@ -20,21 +23,39 @@
 export default {
   data() {
     return {
-      records: []
+      records: [],
+      recordsb: []
     };
   },
-  onLoad() {
+  onLoad(options) {
     var that = this;
+    that.recordsb=[]
     this.$axios
       .post("routine/Store/getExtract", { sid: wx.getStorageSync("sid") })
       .then(function(response) {
+        
+
         that.records = response.data.data;
         for (var i = 0; i < that.records.length; i++) {
           that.records[i].add_time = that.formatTime(
             that.records[i].add_time,
             "Y.M.D h:m:s"
           );
+          if (options.tixian == 0) {
+            if (that.records[i].status == 0) {
+              that.recordsb.push(that.records[i]);
+            }
+          } else if (options.tixian == 2) {
+            if (that.records[i].status == 1) {
+              that.recordsb.push(that.records[i]);
+              console.log(response);
+              
+            }
+          } else {
+            that.recordsb = that.records;
+          }
         }
+        console.log(that.recordsb);
       });
   },
   methods: {

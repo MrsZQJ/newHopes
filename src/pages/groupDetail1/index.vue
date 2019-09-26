@@ -32,7 +32,7 @@
       <div class="serabble">
         <div class="serabble_play">
           <span>拼团玩法</span>
-          <button @click="goToMyself">个人中心</button>
+          <!-- <button @click="goToMyself">个人中心</button> -->
         </div>
         <div class="borf"></div>
         <div class="serabble_list">
@@ -56,14 +56,20 @@
         </div>
       </div>
       <div class="clear"></div>
-      <i-cell title="正在拼团的小伙伴" value="更多"></i-cell>
+      <i-cell
+        title="正在拼团的小伙伴"
+        is-link
+        only-tap-footer
+        :url="'/pages/groupList1/main?pid='+pid"
+        value="更多"
+      ></i-cell>
 
-      <div v-for="(pink,index) in pinks.users" :key="index">
-        <div class="serabblePeople">
+      <div v-for="(pink,index) in pinks" :key="index">
+        <div class="serabblePeople" v-if="pink.users.length!=0">
           <div class="serabblePeople_Left">
-            <img :src="pink.headimgurl" alt />
-            <span>{{pink.nickname}}</span>
-            <i>{{pinks.remain}}人团</i>
+            <img :src="pink.users[0].headimgurl" alt />
+            <span>{{pink.users[0].nickname}}</span>
+            <i>{{pink.remain}}人团</i>
           </div>
           <!-- <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div> -->
           <div class="serabblePeople_Right">去参团</div>
@@ -95,13 +101,15 @@
         <p>地址: {{address}}</p>
         <p>电话: {{tel}}</p>
       </div>
-      <div class="flex">
+      <div v-if="sta==1" class="yiJieShu">活动未开始</div>
+      <div v-else-if="sta==3" class="yiJieShu">活动已结束</div>
+      <div v-else class="flex">
         <div
           v-for="(itm,ids) in tuan"
           class="footFix"
           @click="goToPay"
           :key="ids"
-        >¥{{itm.pri}}({{itm.peo}}人团)</div>
+        >¥{{itm.pri}}&nbsp;&nbsp;({{itm.peo}}人团)</div>
       </div>
       <i-action-sheet
         :visible="visible1"
@@ -153,7 +161,8 @@ export default {
       address: NaN,
       tel: NaN,
       tuan: [],
-      dui: false
+      dui: false,
+      sta: NaN
     };
   },
   created() {
@@ -170,8 +179,16 @@ export default {
       .then(function(response) {
         that.swipers = [];
         that.tuan = [];
+        var times = new Date().valueOf();
         that.serviceinfo = response.data.data.storeInfo.info;
         var cc = [];
+        if (response.data.data.storeInfo.add_time * 1000 > times) {
+          that.sta = 1;
+        } else if (response.data.data.storeInfo.stop_time * 1000 < times) {
+          that.sta = 3;
+        } else {
+          that.sta = 2;
+        }
         for (var j = 1; j <= 3; j++) {
           if (
             !response.data.data.storeInfo["price_" + j] ||
@@ -182,7 +199,6 @@ export default {
           cc.push(+response.data.data.storeInfo["price_" + j]);
         }
         that.price = Math.min.apply(null, cc);
-        // console.log(cc);
         that.pname = response.data.data.storeInfo.pname;
         for (var i = 1; i <= 3; i++) {
           var obj = {};
@@ -215,9 +231,7 @@ export default {
     return {
       title: "转发",
       path: "/pages/groupDetail/main?scene=" + that.pid,
-      success: function(res) {
-        console.log("成功", res);
-      }
+      success: function(res) {}
     };
   },
   methods: {
@@ -239,7 +253,6 @@ export default {
             return;
           }
           that.pinks = res.data.data;
-          console.log(that.pinks);
         });
     },
     imgHeight(wid) {
@@ -530,7 +543,16 @@ swiper image {
   font-size: 15px;
   flex-grow: 1;
 }
-
+.yiJieShu {
+  background-color: #bababa;
+  color: #ffffff;
+  position: fixed;
+  bottom: 0;
+  width: 375px;
+  height: 49px;
+  line-height: 49px;
+  text-align: center;
+}
 .foot img {
   display: block;
   margin: 20px auto;

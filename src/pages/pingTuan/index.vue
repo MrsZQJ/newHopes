@@ -113,6 +113,8 @@ export default {
       .then(function(response) {
         that.pinks = response.data.data;
         for (var i = 0; i < that.pinks.length; i++) {
+          // console.log(that.pinks[i].status);
+          
           that.pinks[i].arr = [];
           for (var j = 1; j <= 3; j++) {
             var obj = {};
@@ -137,9 +139,9 @@ export default {
       });
   },
   methods: {
-    resetEdit(id){
+    resetEdit(pid){
       wx.navigateTo({
-        url: '/pages/resetEdit/main',
+        url: '/pages/resetEdit/main?pid='+pid,
       })
     },
     tapDialogButton(e) {
@@ -163,8 +165,7 @@ export default {
           var cc = [];
           for (var j = 1; j <= 3; j++) {
             if (
-              !response.data.data["price_" + j] ||
-              response.data.data["price_" + j] == 0
+              !response.data.data["price_" + j]
             ) {
               break;
             }
@@ -380,6 +381,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   font-size: 15px;
+  min-width: 165px;
 }
 .moneyDetailLeft span:nth-child(1) {
   font-size: 10px;

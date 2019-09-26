@@ -29,7 +29,6 @@ export default {
       })
       .then(function(response) {
         that.pinks = response.data.data.pink;
-        console.log(that.pinks);
         
       });
   }

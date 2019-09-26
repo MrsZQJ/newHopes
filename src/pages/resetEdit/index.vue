@@ -1,7 +1,14 @@
 <template>
   <div class="bgf">
     <div id="body">
-      <i-input right title="拼团活动名称" placeholder="请填写拼团名称" maxlength="20" @change="name" v-model="namePingTuan" />
+      <i-input
+        right
+        title="拼团活动名称"
+        placeholder="请填写拼团名称"
+        maxlength="20"
+        @change="name"
+        v-model="namePingTuan"
+      />
       <div class="border1px"></div>
       <!-- <div class="changeTime" @click="startTime">
       <span>拼团开始时间</span>
@@ -85,9 +92,24 @@
         maxlength="11"
       />
       <div class="border1px"></div>
-      <i-input right title="地址位置" placeholder="请输入详细地址" @change="addr" maxlength="20" v-model="address" />
+      <i-input
+        right
+        title="地址位置"
+        placeholder="请输入详细地址"
+        @change="addr"
+        maxlength="20"
+        v-model="address"
+      />
       <div class="border1px"></div>
-      <i-input right title="客服电话" type="number" placeholder="请输入客服电话" @change="tel" maxlength="20" v-model="telNalue" />
+      <i-input
+        right
+        title="客服电话"
+        type="number"
+        placeholder="请输入客服电话"
+        @change="tel"
+        maxlength="20"
+        v-model="telNalue"
+      />
       <div class="border1px"></div>
       <!-- <i-input right title="客服电话" placeholder="请输入客服电话" @change="tel" maxlength="20" />
       <div class="border1px"></div>-->
@@ -100,6 +122,7 @@
           type="datetime"
           :min-date="minDate1"
           :max-date="maxDate"
+          :value="currentDate1a"
           @cancel="inStartClose"
           @input="onInputStart"
           @confirm="closeTimeChange"
@@ -108,6 +131,7 @@
       <van-popup :show="showEndTime" position="bottom" overlay="false" @close="onEndClose">
         <van-datetime-picker
           type="datetime"
+          :value="currentDate2a"
           :min-date="minDate1"
           :max-date="maxDate"
           @cancel="inEndClose"
@@ -116,7 +140,7 @@
         />
       </van-popup>
     </div>
-    <span class="last" @click="publish">发布活动</span>
+    <span class="last" @click="publish">提交编辑</span>
   </div>
 </template>
 <script>
@@ -126,7 +150,7 @@ export default {
     return {
       cantuanxuzhi: "",
       namePingTuan: "",
-      num: '',
+      num: "",
       address: "",
       telNalue: "",
       minDate1: new Date().getTime(),
@@ -136,6 +160,8 @@ export default {
       currentDate2: "拼团结束时间", //用户选择的结束时间
       showEndTime: false, //是否显示结束时间选择框,
       imgtop: "",
+      currentDate1a:NaN,
+      currentDate2a:NaN,
       imgfuwu: "",
       shopname: "",
       info: "",
@@ -144,11 +170,67 @@ export default {
       array: [1], //默认显示一个
       inputVal1: [""], //所有input的内容
       inputVal2: [""],
-      numJiSuan1:1,
-      numJiSuan2:1,
+      numJiSuan1: 1,
+      numJiSuan2: 1,
+      pid: NaN
     };
   },
+  onLoad(options) {
+    var that = this;
+    that.pid = options.pid;
+    this.$axios
+      .post("routine/Store/pink_detail", {
+        sid: wx.getStorageSync("sid"),
+        id: options.pid
+      })
+      .then(function(response) {
+        that.namePingTuan = response.data.data.storeInfo.pname;
+        that.currentDate1a=(response.data.data.storeInfo.add_time)*1000
+        that.currentDate2a=(response.data.data.storeInfo.stop_time)*1000
+        that.currentDate1 = that.formatTime(response.data.data.storeInfo.add_time,'Y/M/D h:m:s');
+        that.currentDate2 = that.formatTime(response.data.data.storeInfo.stop_time,'Y/M/D h:m:s');
+        that.array = [];
+        that.inputVal1 = [];
+        that.inputVal2 = [];
+        for (var i = 1; i <= 3; i++) {
+          if (response.data.data.storeInfo["people_" + i]) {
+            that.array.push(1);
+            that.inputVal1.push(response.data.data.storeInfo["people_" + i]);
+            that.inputVal2.push(response.data.data.storeInfo["price_" + i]);
+          }
+        }
+        that.topimgList = response.data.data.storeInfo.picture.split(",");
+        that.fuwuimgList = response.data.data.storeInfo.detail_image.split(",");
+        that.info = response.data.data.storeInfo.info;
+        that.shopname = response.data.data.storeInfo.shop_name;
+        that.address = response.data.data.storeInfo.address;
+        that.telNalue = response.data.data.storeInfo.service_tel;
+        that.cantuanxuzhi = response.data.data.storeInfo.notice;
+      });
+  },
   methods: {
+    formatTime(number, format) {
+      var that = this;
+      var formateArr = ["Y", "M", "D", "h", "m", "s"];
+      var returnArr = [];
+      var date = new Date(number * 1000);
+      returnArr.push(date.getFullYear());
+      returnArr.push(that.formatNumber(date.getMonth() + 1));
+      returnArr.push(that.formatNumber(date.getDate()));
+
+      returnArr.push(that.formatNumber(date.getHours()));
+      returnArr.push(that.formatNumber(date.getMinutes()));
+      returnArr.push(that.formatNumber(date.getSeconds()));
+
+      for (var i in returnArr) {
+        format = format.replace(formateArr[i], returnArr[i]);
+      }
+      return format;
+    },
+    formatNumber(n) {
+      n = n.toString();
+      return n[1] ? n : "0" + n;
+    },
     name(e) {
       this.namePingTuan = e.target.detail.value;
     },
@@ -318,9 +400,7 @@ export default {
         });
         return;
       }
-      if (
-        this.telNalue == ""
-      ) {
+      if (this.telNalue == "") {
         wx.showToast({
           title: "请全部填写",
           icon: "none",
@@ -338,6 +418,7 @@ export default {
       }
       var obj = {
         sid: wx.getStorageSync("sid"),
+        pid:this.pid,
         pname: this.namePingTuan,
         address: that.address,
         add_time: this.currentDate1,
@@ -349,12 +430,11 @@ export default {
         info: this.info,
         service_tel: this.telNalue,
         directions: "",
-        num:'',
-        price_2:'',
-        price_3:'',
-        people_2:'',
-        people_3:'',
-
+        num: "",
+        price_2: "",
+        price_3: "",
+        people_2: "",
+        people_3: ""
       };
       for (var i = 0; i < this.inputVal1.length; i++) {
         if (this.inputVal1[i] == "") {
@@ -379,14 +459,14 @@ export default {
         obj[`price_${i + 1}`] = this.inputVal2[i];
       }
 
-      this.$axios.post("routine/Store/addPink", obj).then(function(response) {
+      this.$axios.post("routine/Store/editPink", obj).then(function(response) {
         wx.showToast({
           title: response.data.msg,
           icon: "none",
           duration: 1000
         });
-        if(response.data.code==400){
-          return
+        if (response.data.code == 400) {
+          return;
         }
         wx.navigateTo({
           url: "/pages/pingTuan/main"
@@ -402,28 +482,28 @@ export default {
       this.showEndTime = false;
     },
     // 关闭时间选择框
-    closeTimeChange() {
+    closeTimeChange(e) {
       this.showStartTime = false;
+      this.currentDate1 = time.formatTime(e.mp.detail);
     },
-    closeTimeChange2() {
+    closeTimeChange2(e) {
+      this.currentDate2 = time.formatTime(e.mp.detail);
       this.showEndTime = false;
     },
     // 更新用户开始时间选择
-    onInputStart(event) {
-      if(this.numJiSuan1==1){
-        this.numJiSuan1+=1
-        return
-      }
-      this.currentDate1 = time.formatTime(event.mp.detail);
-    },
+    // onInputStart(event) {
+      // if (this.numJiSuan1 == 2) {
+      //   this.currentDate1 = time.formatTime(event.mp.detail);
+      // }
+      // this.numJiSuan1 += 1;
+    // },
     //更新用户结束时间选择
-    onInputEnd(event) {
-      if(this.numJiSuan2==1){
-        this.numJiSuan2+=1
-        return
-      }
-      this.currentDate2 = time.formatTime(event.mp.detail);
-    },
+    // onInputEnd(event) {
+      // if (this.numJiSuan2 == 10) {
+      //   this.currentDate2 = time.formatTime(event.mp.detail);
+      // }
+      // this.numJiSuan2 += 1;
+    // },
     //点击遮罩层关闭开始时间选择框
     onStartClose(e) {
       this.showStartTime = false;

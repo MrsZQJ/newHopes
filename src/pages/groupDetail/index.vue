@@ -64,15 +64,15 @@
         only-tap-footer
         :url="'/pages/groupList1/main?pid='+pinkid"
       ></i-cell>
-      <div v-for="(pink,index) in pinks.users" :key="index">
-        <div class="serabblePeople">
+      <div v-for="(pink,index) in pinks" :key="index">
+        <div class="serabblePeople" v-if="pink.users.length!=0">
           <div class="serabblePeople_Left">
-            <img :src="pink.headimgurl" alt />
-            <span>{{pink.nickname}}</span>
-            <i>{{pinks.remain}}人团</i>
+            <img :src="pink.users[0].headimgurl" alt />
+            <span>{{pink.users[0].nickname}}</span>
+            <i>{{pink.remain}}人团</i>
           </div>
           <!-- <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div> -->
-          <div class="serabblePeople_Right">去参团</div>
+          <div class="serabblePeople_Right" @click="goToCan">去参团</div>
         </div>
       </div>
 
@@ -103,13 +103,15 @@
         <p>地址: {{address}}</p>
         <p>电话: {{tel}}</p>
       </div>
-      <div class="flex">
+      <div v-if="sta==1" class="yiJieShu">活动未开始</div>
+      <div v-else-if="sta==3" class="yiJieShu">活动已结束</div>
+      <div v-else class="flex">
         <div
           v-for="(itm,ids) in tuan"
           class="footFix"
           @click="goToPay(ids,itm.pri)"
           :key="ids"
-        >¥{{itm.pri}}({{itm.peo}}人团)</div>
+        >¥{{itm.pri}}&nbsp;&nbsp;({{itm.peo}}人团)</div>
       </div>
       <i-action-sheet
         :visible="visible1"
@@ -181,46 +183,68 @@ export default {
       ],
       pinkid: NaN,
       tuan: [],
-      dui: false
+      dui: false,
+      sta: NaN
     };
   },
   onLoad(options) {
     this.pinkid = options.scene;
-    this.dui = false;
-    wx.login({
-      success: res => {
-        console.log(res);
-        
-        if (res.code) {
-          wx.request({
-            url: "https://www.meifuyihao.com/index.php/routine/logins/setCode",
-            method: "post",
-            dataType: "json",
-            data: { info: res },
-            success: function(response) {
-              wx.setStorageSync("openid", response.data.openid);
-              wx.setStorageSync("session_key", response.data.session_key);
-            }
-          });
-        } else {
-        }
-      }
-    });
-    var that = this;
-    if (wx.getStorageSync("pdata")) {
-      this.$axios
-        .post("routine/logins/index", {
-          info: wx.getStorageSync("pdata")
-        })
-        .then(function(response) {
-          that.isShows = false;
-          that.shuju();
-        });
-      that.isShows = false;
-    }
+    this.gonggong();
   },
-
+  // onShow() {
+  // this.gonggong();
+  // },
+  //转发
+  onShareAppMessage: function(res) {
+    var that = this;
+    if (res.from === "button") {
+    }
+    return {
+      title: "转发",
+      path: "/pages/groupDetail/main?scene=" + that.pinkid,
+      success: function(res) {}
+    };
+  },
   methods: {
+    goToCan() {
+      var that = this;
+      wx.navigateTo({
+        url: "/pages/groupDetail/main?scene=" + that.pinkid
+      });
+    },
+    gonggong() {
+      this.dui = false;
+      wx.login({
+        success: res => {
+          if (res.code) {
+            wx.request({
+              url:
+                "https://www.meifuyihao.com/index.php/routine/logins/setCode",
+              method: "post",
+              dataType: "json",
+              data: { info: res },
+              success: function(response) {
+                wx.setStorageSync("openid", response.data.openid);
+                wx.setStorageSync("session_key", response.data.session_key);
+              }
+            });
+          } else {
+          }
+        }
+      });
+      var that = this;
+      if (wx.getStorageSync("pdata")) {
+        this.$axios
+          .post("routine/logins/index", {
+            info: wx.getStorageSync("pdata")
+          })
+          .then(function(response) {
+            that.isShows = false;
+            that.shuju();
+          });
+        that.isShows = false;
+      }
+    },
     imgHeight(wid) {
       var thar = this;
       thar.comNum = [];
@@ -244,28 +268,45 @@ export default {
         url: "/pages/PersonalCenter/main"
       });
     },
-    goToPay(peo,pri) {
-      if (this.dui) {
-        wx.showToast({
-          title: "该拼团已结束！",
-          icon: "none",
-          duration: 2000
+    goToPay(peo, pri) {
+      var that = this;
+      this.$axios
+        .post("routine/users/is_participate", {
+          openid: wx.getStorageSync("openid"),
+          id: that.pinkid
+        })
+        .then(function(res) {
+          if (res.data.data == true) {
+            wx.showToast({
+              title: "最多参加一个团！",
+              icon: "none",
+              duration: 2000
+            });
+            return;
+          }
+
+          if (this.dui) {
+            wx.showToast({
+              title: "该拼团已结束！",
+              icon: "none",
+              duration: 2000
+            });
+            return false;
+          }
+          wx.navigateTo({
+            url:
+              "/pages/pay/main?storeid=" +
+              this.storeid +
+              "&productid=" +
+              this.productid +
+              "&price=" +
+              pri +
+              "&pname=" +
+              this.pname +
+              "&people=" +
+              (peo + 1)
+          });
         });
-        return false;
-      }
-      wx.navigateTo({
-        url:
-          "/pages/pay/main?storeid=" +
-          this.storeid +
-          "&productid=" +
-          this.productid +
-          "&price=" +
-          pri +
-          "&pname=" +
-          this.pname+
-          "&people=" +
-          (peo+1)
-      });
     },
     handleClickItem(e) {
       this.visible1 = false;
@@ -280,6 +321,7 @@ export default {
     shuju() {
       this.imgheights = NaN;
       var that = this;
+      var times = new Date().valueOf();
       this.$axios
         .post("routine/Users/combination_detail", {
           openid: wx.getStorageSync("openid"),
@@ -300,6 +342,13 @@ export default {
           that.productid = response.data.data.storeInfo.id;
           that.storeid = response.data.data.storeInfo.uid;
           var cc = [];
+          if (response.data.data.storeInfo.add_time * 1000 > times) {
+            that.sta = 1;
+          } else if (response.data.data.storeInfo.stop_time * 1000 < times) {
+            that.sta = 3;
+          } else {
+            that.sta = 2;
+          }
           for (var j = 1; j <= 3; j++) {
             if (
               !response.data.data.storeInfo["price_" + j] ||
@@ -352,9 +401,7 @@ export default {
             that.dui = true;
             return;
           }
-          that.pinks=res.data.data
-          console.log(that.pinks);
-          
+          that.pinks = res.data.data;
         });
     },
     bindGetUserInfo(e) {
@@ -550,7 +597,7 @@ swiper image {
   margin-right: 15px;
   width: 69px;
   height: 24px;
-  background-color: #F35379;
+  background-color: #f35379;
   font-size: 12px;
   text-align: center;
   line-height: 24px;
@@ -605,7 +652,16 @@ swiper image {
   font-size: 15px;
   flex-grow: 1;
 }
-
+.yiJieShu {
+  background-color: #bababa;
+  color: #ffffff;
+  position: fixed;
+  bottom: 0;
+  width: 375px;
+  height: 49px;
+  line-height: 49px;
+  text-align: center;
+}
 .foot img {
   display: block;
   margin: 20px auto;
