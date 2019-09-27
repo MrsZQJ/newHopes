@@ -65,14 +65,13 @@
       ></i-cell>
 
       <div v-for="(pink,index) in pinks" :key="index">
-        <div class="serabblePeople" v-if="pink.users.length!=0">
+        <div class="serabblePeople">
           <div class="serabblePeople_Left">
-            <img :src="pink.users[0].headimgurl" alt />
-            <span>{{pink.users[0].nickname}}</span>
-            <i>{{pink.remain}}人团</i>
+            <img src="../../../static/img/logo.jpg" alt />
+            <span>{{pink[0].name}}</span>
+            <i>{{pink[0].people}}人团</i>
           </div>
-          <!-- <div v-if="pink.pink==1" class="serabblePeople_Right">已成团</div> -->
-          <div class="serabblePeople_Right">去参团</div>
+          <div class="serabblePeople_Right">{{pink[0].status==0?'未成团':'已成团'}}</div>
         </div>
       </div>
       <div class="clear"></div>
@@ -237,23 +236,39 @@ export default {
   methods: {
     zhenPing() {
       var that = this;
+      that.pinks = [];
+      var asdy = [];
       this.$axios
         .post("routine/Store/participate_user", {
-          id: that.pid,
-          limit: 6
+          sid: wx.getStorageSync("sid"),
+          limit: 0
         })
         .then(function(res) {
-          if (res.data.data.status == 1) {
-            wx.showToast({
-              title: "该拼团已结束！",
-              icon: "none",
-              duration: 2000
-            });
-            that.dui = true;
-            return;
+          var c = 0;
+          asdy = res.data.data;
+          for (var i = 0; i < asdy.length; i++) {
+            if (c >= 6) {
+              break;
+            }
+            c += 1;
+            var mu = that.chuli(asdy[i]);
+            asdy[i] = mu;
           }
-          that.pinks = res.data.data;
+          that.pinks = asdy;
         });
+    },
+    chuli(arr) {
+      var ccc = arr;
+      for (var j = 0; j < ccc.length; j++) {
+        for (var z = 0; z < ccc.length - j - 1; z++) {
+          if (ccc[z].people < ccc[z + 1].people) {
+            var temp = ccc[z];
+            ccc[z] = ccc[z + 1];
+            ccc[z + 1] = temp;
+          }
+        }
+      }
+      return ccc;
     },
     imgHeight(wid) {
       var thar = this;

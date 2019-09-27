@@ -148,6 +148,26 @@ export default {
       numJiSuan2:1,
     };
   },
+  onLoad(){
+    this.cantuanxuzhi=''
+    this.namePingTuan=''
+    this.num=''
+    this.address=''
+    this.telNalue=''
+    this.currentDate1='拼团开始时间'
+    this.currentDate2='拼团结束时间'
+    this.imgtop=''
+    this.imgfuwu=''
+    this.shopname=''
+    this.info=''
+    this.topimgList=[]
+    this.fuwuimgList=[]
+    this.array=[1]
+    this.inputVal1=[""]
+    this.inputVal1=[""]
+    this.numJiSuan1=1
+    this.numJiSuan2=1
+  },
   methods: {
     name(e) {
       this.namePingTuan = e.target.detail.value;

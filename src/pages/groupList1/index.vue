@@ -1,17 +1,17 @@
 <template>
   <div id="body">
     <div v-for="(pink,index) in pinks" :key="index">
-      <div class="serabblePeople" v-if="pink.users.length!=0">
+      <div class="serabblePeople">
         <div class="serabblePeople_Left">
-          <img :src="pink.users[0].headimgurl" alt />
-          <span>{{pink.users[0].nickname}}</span>
-          <i>{{pink.people}}人团</i>
-          <p>还差{{pink.remain}}人拼成</p>
+          <img src="../../../static/img/logo.jpg" alt />
+          <span>{{pink[0].name}}</span>
+          <i>{{pink[0].people}}人团</i>
+          <p>还差{{pink[0].remain}}人拼成</p>
         </div>
-        <div class="serabblePeople_Right">{{pink.status==0?'未成团':'已成团'}}</div>
+        <div class="serabblePeople_Right">{{pink[0].status==0?'未成团':'已成团'}}</div>
       </div>
-      <div class="border1px"></div>
     </div>
+    <div class="border1px"></div>
   </div>
 </template>
 <script>
@@ -19,17 +19,44 @@ export default {
   data() {
     return {
       pinks: [],
-      num:0
+      num: 0
     };
   },
   onLoad(options) {
     var that = this;
-    that.$axios.post("routine/Store/participate_user", {
-      id: options.pid,
-      limit: 0
-    }).then(function(res){
-      that.pinks = res.data.data;
-    })
+    that.pinks = [];
+    var asdy = [];
+    that.$axios
+      .post("routine/Store/participate_user", {
+        sid: wx.getStorageSync("sid"),
+        limit: 0
+      })
+      .then(function(res) {
+        asdy = res.data.data;
+        for (var i = 0; i < asdy.length; i++) {
+          var mu = that.chuli(asdy[i]);
+          asdy[i] = mu;
+        }
+        that.pinks = asdy;
+      });
+  },
+  methods: {
+    chuli(arr) {
+      var ccc = arr;
+      for (var j = 0; j < ccc.length; j++) {
+        for (var z = 0; z < ccc.length - j - 1; z++) {
+          // if (ccc[z].people) {
+          //   ccc[z].people.length = 4;
+          // }
+          if (ccc[z].people < ccc[z + 1].people) {
+            var temp = ccc[z];
+            ccc[z] = ccc[z + 1];
+            ccc[z + 1] = temp;
+          }
+        }
+      }
+      return ccc;
+    }
   }
 };
 </script>     
@@ -55,6 +82,10 @@ export default {
   color: #333333;
   font-size: 15px;
   line-height: 60px;
+  width: 75px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .serabblePeople .serabblePeople_Left i {
   padding: 0px 4px;
@@ -67,7 +98,7 @@ export default {
   margin-left: 10px;
   margin-top: 20px;
 }
-.serabblePeople .serabblePeople_Left p{
+.serabblePeople .serabblePeople_Left p {
   position: absolute;
   color: #999999;
   font-size: 14px;

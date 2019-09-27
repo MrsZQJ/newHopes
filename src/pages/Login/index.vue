@@ -24,8 +24,8 @@ const { $Toast } = require("../../../static/iview/base/index");
 export default {
   data() {
     return {
-      phone: "13632509970",
-      password: "12345"
+      phone: "",
+      password: ""
     };
   },
   created() {},
@@ -122,7 +122,7 @@ export default {
     },
     call() {
       wx.makePhoneCall({
-        phoneNumber: "13040887911"
+        phoneNumber: "13378461590"
       });
     }
   }
