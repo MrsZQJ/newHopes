@@ -78,9 +78,10 @@
       <div class="datail">
         <p>服务详情</p>
         <div class="border1px"></div>
-        <span>{{serviceinfo}}</span>
+        <!-- <span>{{serviceinfo}}</span> -->
+        <editor id="editor1" class="editor" read-only></editor>
         <img
-          :style="{height:comNum[idx]+'px !important' }"
+          mode='widthFix'
           :src="val"
           v-for="(val,idx) in detail_image"
           :key="idx"
@@ -90,7 +91,8 @@
       <div class="datail">
         <p>参团须知</p>
         <div class="border1px"></div>
-        <span>{{notice}}</span>
+        <editor class="editor" id="editor2" read-only></editor>
+        <!-- <span>{{notice}}</span> -->
       </div>
       <div class="clear"></div>
       <div class="datail">
@@ -170,10 +172,76 @@ export default {
   onLoad(options) {
     var that = this;
     that.pid = options.pinkid;
+    // this.$axios
+    //   .post("routine/Store/pink_detail", {
+    //     sid: wx.getStorageSync("sid"),
+    //     id: options.pinkid
+    //   })
+    //   .then(function(response) {
+    //     that.swipers = [];
+    //     that.tuan = [];
+    //     var times = new Date().valueOf();
+    //     that.serviceinfo = response.data.data.storeInfo.info;
+    //     var cc = [];
+    //     if (response.data.data.storeInfo.add_time * 1000 > times) {
+    //       that.sta = 1;
+    //     } else if (response.data.data.storeInfo.stop_time * 1000 < times) {
+    //       that.sta = 3;
+    //     } else {
+    //       that.sta = 2;
+    //     }
+    //     for (var j = 1; j <= 3; j++) {
+    //       if (
+    //         !response.data.data.storeInfo["price_" + j] ||
+    //         response.data.data.storeInfo["price_" + j] == 0
+    //       ) {
+    //         break;
+    //       }
+    //       cc.push(+response.data.data.storeInfo["price_" + j]);
+    //     }
+    //     that.price = Math.min.apply(null, cc);
+    //     that.pname = response.data.data.storeInfo.pname;
+    //     for (var i = 1; i <= 3; i++) {
+    //       var obj = {};
+    //       if (response.data.data.storeInfo["price_" + i] == that.price) {
+    //         that.people = response.data.data.storeInfo["people_" + i];
+    //       }
+    //       obj.peo = response.data.data.storeInfo["people_" + i];
+    //       obj.pri = response.data.data.storeInfo["price_" + i];
+    //       if (response.data.data.storeInfo["people_" + i]) {
+    //         that.tuan.push(obj);
+    //       }
+    //     }
+    //     that.notice = response.data.data.storeInfo.notice;
+    //     that.shop_name = response.data.data.storeInfo.shop_name;
+    //     that.address = response.data.data.storeInfo.address;
+    //     that.tel = response.data.data.storeInfo.service_tel;
+    //     var detail_image = response.data.data.storeInfo.detail_image;
+    //     var pictures = response.data.data.storeInfo.picture;
+    //     that.swipers = pictures.split(",");
+    //     var detail_q = detail_image.split(",");
+    //     // that.detail_image = detail_image.split(",");
+    //     for (var i = 0; i < detail_q.length; i++) {
+    //       wx.getImageInfo({
+    //         src: detail_q[i],
+    //         success(res) {
+    //           console.log(res);
+
+    //           that.comNum.push(375 / res.width * res.height);
+    //         }
+    //       });
+    //     }
+    //     that.detail_image = detail_image.split(",");
+    //     // that.imgHeight(that.detail_image);
+    //     that.zhenPing();
+    // });
+  },
+  onShow() {
+    var that = this;
     this.$axios
       .post("routine/Store/pink_detail", {
         sid: wx.getStorageSync("sid"),
-        id: options.pinkid
+        id: that.pid
       })
       .then(function(response) {
         that.swipers = [];
@@ -217,8 +285,55 @@ export default {
         var detail_image = response.data.data.storeInfo.detail_image;
         var pictures = response.data.data.storeInfo.picture;
         that.swipers = pictures.split(",");
+        var detail_q = detail_image.split(",");
+        // that.detail_image = detail_image.split(",");
+        // that.comNum = [];
+        // for (var i = 0; i < detail_q.length; i++) {
+        //   wx.getImageInfo({
+        //     src: detail_q[i],
+        //     success(res) {
+        //       console.log( res.height);
+              
+        //       that.comNum.push(375 / res.width * res.height);
+        //     }
+        //   });
+        // }
+        // console.log(that.comNum);
+        detail_q = [];
         that.detail_image = detail_image.split(",");
-        that.imgHeight(that.detail_image);
+        // that.imgHeight(that.detail_image);
+        wx
+          .createSelectorQuery()
+          .select("#editor1")
+          .context(function(res) {
+            that.editorCtx = res.context;
+            that.editorCtx.setContents({
+              html: that.serviceinfo,
+              success: res => {
+                // console.log(res);
+              },
+              fail: res => {
+                console.log(res);
+              }
+            });
+          })
+          .exec();
+        wx
+          .createSelectorQuery()
+          .select("#editor2")
+          .context(function(res) {
+            that.editorCtx = res.context;
+            that.editorCtx.setContents({
+              html: that.notice,
+              success: res => {
+                // console.log(res);
+              },
+              fail: res => {
+                console.log(res);
+              }
+            });
+          })
+          .exec();
         that.zhenPing();
       });
   },
@@ -248,13 +363,14 @@ export default {
           asdy = res.data.data;
           for (var i = 0; i < asdy.length; i++) {
             if (c >= 6) {
+              asdy.length = 6;
+              that.pinks = asdy;
               break;
             }
             c += 1;
             var mu = that.chuli(asdy[i]);
             asdy[i] = mu;
           }
-          that.pinks = asdy;
         });
     },
     chuli(arr) {
@@ -333,6 +449,10 @@ export default {
 <style scoped>
 #body {
   background-color: #ffffff;
+}
+.editor{
+  height: auto !important;
+  min-height: 0px;
 }
 .addXiao {
   color: #000000;
@@ -557,6 +677,10 @@ swiper image {
   line-height: 49px;
   font-size: 15px;
   flex-grow: 1;
+  border-right: 1px solid #ffffff;
+}
+.footFix:last-child{
+  border:none;
 }
 .yiJieShu {
   background-color: #bababa;

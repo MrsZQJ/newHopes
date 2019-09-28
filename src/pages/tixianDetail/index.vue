@@ -3,7 +3,7 @@
     <div v-for="order in recordsb" :key="order.id">
       <div class="box">
         <div class="boxLeft">
-          <p>美哒哒体验店</p>
+          <p>{{name}}</p>
           <p>订单号：{{order.ordernob}}</p>
           <p>{{order.add_time}}</p>
         </div>
@@ -24,11 +24,14 @@ export default {
   data() {
     return {
       records: [],
-      recordsb: []
+      recordsb: [],
+      name:NaN
     };
   },
   onLoad(options) {
     var that = this;
+    that.name=NaN
+    that.name=options.name
     that.recordsb=[]
     this.$axios
       .post("routine/Store/getExtract", { sid: wx.getStorageSync("sid") })

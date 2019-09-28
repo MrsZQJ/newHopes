@@ -2,13 +2,13 @@
   <div id="body">
     <div v-for="(pink,index) in pinks" :key="index">
       <div class="serabblePeople">
-        <div class="serabblePeople_Left">
+        <div class="serabblePeople_Left" @click="goToTuan(pink[0].pid)">
           <img src="../../../static/img/logo.jpg" alt />
           <span>{{pink[0].name}}</span>
           <i>{{pink[0].people}}人团</i>
           <p>还差{{pink[0].remain}}人拼成</p>
         </div>
-        <div class="serabblePeople_Right">{{pink[0].status==0?'未成团':'已成团'}}</div>
+        <div class="serabblePeople_Right">{{pink[0].status==0?'进行中':'已成团'}}</div>
       </div>
     </div>
     <div class="border1px"></div>
@@ -19,13 +19,18 @@ export default {
   data() {
     return {
       pinks: [],
-      num: 0
+      num: 0,
+      duic:true,
     };
   },
   onLoad(options) {
     var that = this;
+    this.duic=true
     that.pinks = [];
     var asdy = [];
+    if(options.nus==1){
+      this.duic=false
+    }
     that.$axios
       .post("routine/Store/participate_user", {
         sid: wx.getStorageSync("sid"),
@@ -41,6 +46,14 @@ export default {
       });
   },
   methods: {
+    goToTuan(pinkid) {
+      if(this.duic){
+        return
+      }
+      wx.navigateTo({
+        url: "/pages/groupDetail/main?scene=" + pinkid
+      });
+    },
     chuli(arr) {
       var ccc = arr;
       for (var j = 0; j < ccc.length; j++) {
@@ -108,7 +121,7 @@ export default {
 }
 .serabblePeople .serabblePeople_Right {
   font-size: 14px;
-  color: #ea6584;
+  color: #333333;
   float: right;
   margin-right: 15px;
   line-height: 60px;

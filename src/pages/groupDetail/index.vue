@@ -62,7 +62,7 @@
         value="更多"
         is-link
         only-tap-footer
-        :url="'/pages/groupList1/main?pid='+pinkid"
+        :url="'/pages/groupList1/main?pid='+pinkid+'&nus=1'"
       ></i-cell>
       <div v-for="(pink,index) in pinks" :key="index">
         <div class="serabblePeople">
@@ -80,10 +80,11 @@
       <div class="datail">
         <p>服务详情</p>
         <div class="border1px"></div>
-        <span>{{serviceinfo}}</span>
+        <editor id="editor1" class="editor" read-only></editor>
+        <!-- <span>{{serviceinfo}}</span> -->
         <div class="dv"></div>
         <img
-          :style="{height:comNum[idx]+'px !important' }"
+          mode='widthFix'
           :src="val"
           v-for="(val,idx) in detail_image"
           :key="idx"
@@ -93,7 +94,8 @@
       <div class="datail">
         <p>参团须知</p>
         <div class="border1px"></div>
-        <span>{{notice}}</span>
+        <editor class="editor" id="editor2" read-only></editor>
+        <!-- <span>{{notice}}</span> -->
       </div>
       <div class="clear"></div>
       <div class="datail">
@@ -286,7 +288,7 @@ export default {
             return;
           }
 
-          if (this.dui) {
+          if (that.dui) {
             wx.showToast({
               title: "该拼团已结束！",
               icon: "none",
@@ -297,13 +299,13 @@ export default {
           wx.navigateTo({
             url:
               "/pages/pay/main?storeid=" +
-              this.storeid +
+              that.storeid +
               "&productid=" +
-              this.productid +
+              that.productid +
               "&price=" +
               pri +
               "&pname=" +
-              this.pname +
+              that.pname +
               "&people=" +
               (peo + 1)
           });
@@ -335,6 +337,7 @@ export default {
               icon: "none",
               duration: 2000
             });
+            that.sta = 3;
             return;
           }
           that.swipers = [];
@@ -378,10 +381,46 @@ export default {
           that.address = response.data.data.storeInfo.address;
           that.tel = response.data.data.storeInfo.service_tel;
           var detail_image = response.data.data.storeInfo.detail_image;
-          that.detail_image = detail_image.split(",");
+          // that.detail_image = detail_image.split(",");
           var pictures = response.data.data.storeInfo.picture;
           that.swipers = pictures;
-          that.imgHeight(that.detail_image);
+          var detail_q = detail_image.split(",");
+          // that.detail_image = detail_image.split(",");
+          detail_q = [];
+          that.detail_image = detail_image.split(",");
+          // that.imgHeight(that.detail_image);
+          wx
+            .createSelectorQuery()
+            .select("#editor1")
+            .context(function(res) {
+              that.editorCtx = res.context;
+              that.editorCtx.setContents({
+                html: that.serviceinfo,
+                success: res => {
+                  // console.log(res);
+                },
+                fail: res => {
+                  console.log(res);
+                }
+              });
+            })
+            .exec();
+          wx
+            .createSelectorQuery()
+            .select("#editor2")
+            .context(function(res) {
+              that.editorCtx = res.context;
+              that.editorCtx.setContents({
+                html: that.notice,
+                success: res => {
+                  // console.log(res);
+                },
+                fail: res => {
+                  console.log(res);
+                }
+              });
+            })
+            .exec();
           that.zhenPing();
         });
     },
@@ -399,18 +438,19 @@ export default {
           var c = 0;
           asdy = res.data.data;
           for (var i = 0; i < asdy.length; i++) {
-            if(c>=6){
-              break
+            if (c >= 6) {
+              asdy.length = 6;
+              that.pinks = asdy;
+              break;
             }
-            c+=1
+            c += 1;
             var mu = that.chuli(asdy[i]);
             asdy[i] = mu;
           }
-          that.pinks=asdy
         });
     },
     chuli(arr) {
-      var ccc=arr
+      var ccc = arr;
       for (var j = 0; j < ccc.length; j++) {
         for (var z = 0; z < ccc.length - j - 1; z++) {
           if (ccc[z].people < ccc[z + 1].people) {
@@ -420,7 +460,7 @@ export default {
           }
         }
       }
-      return ccc
+      return ccc;
     },
     bindGetUserInfo(e) {
       var that = this;
@@ -445,6 +485,10 @@ export default {
 <style scoped>
 #body {
   background-color: #ffffff;
+}
+.editor{
+  height: auto !important;
+  min-height: 0px;
 }
 .addXiao {
   color: #000000;

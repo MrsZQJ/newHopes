@@ -24,8 +24,8 @@ const { $Toast } = require("../../../static/iview/base/index");
 export default {
   data() {
     return {
-      phone: "",
-      password: ""
+      phone: "13632509970",
+      password: "12345"
     };
   },
   created() {},

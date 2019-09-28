@@ -1,15 +1,22 @@
 <template>
   <div class="bgf">
     <div id="body">
-      <i-input right title="拼团活动名称" placeholder="请填写拼团名称" maxlength="20" @change="name" v-model="namePingTuan" />
+      <i-input
+        right
+        title="拼团活动名称"
+        placeholder="请填写拼团名称"
+        maxlength="20"
+        @change="name"
+        v-model="namePingTuan"
+      />
       <div class="border1px"></div>
-      <!-- <div class="changeTime" @click="startTime">
-      <span>拼团开始时间</span>
-      <span>{{currentDate1}}</span>
-      </div>-->
+      <div class="changeTime" @click="startTime">
+        <span @click="startTime">拼团开始时间</span>
+        <span>{{currentDate1}}</span>
+      </div>
       <div class="changeTime">
-        <!-- <span>拼团结束时间</span> -->
-        <span @click="startTime">{{currentDate1}}</span>
+        <span>拼团结束时间</span>
+        <!-- <span >{{currentDate1}}</span> -->
         <span @click="endTime">{{currentDate2}}</span>
       </div>
       <div class="border1px"></div>
@@ -60,7 +67,16 @@
       <div class="clear"></div>
       <div class="fuwuDetail">
         <p>服务详情</p>
-        <textarea placeholder="请输入服务详情" v-model="info"></textarea>
+        <!-- <textarea placeholder="请输入服务详情" v-model="info"></textarea> -->
+        <editor
+          class="editor"
+          v-model="info"
+          placeholder="请输入服务详情"
+          showImgSize
+          showImgToolbar
+          showImgResize
+          @input="binfo"
+        ></editor>
         <div class="fuwuImg">
           <img src="../../../static/img/jh_img@2x.png" class="addImg" @click="fuwuimage" />
           <!-- <img class="imgfuwu" :src="fuwu" v-for="(fuwu,index) in fuwuimgList" :key="index" /> -->
@@ -85,15 +101,38 @@
         maxlength="11"
       />
       <div class="border1px"></div>
-      <i-input right title="地址位置" placeholder="请输入详细地址" @change="addr" maxlength="20" v-model="address" />
+      <i-input
+        right
+        title="地址位置"
+        placeholder="请输入详细地址"
+        @change="addr"
+        maxlength="20"
+        v-model="address"
+      />
       <div class="border1px"></div>
-      <i-input right title="客服电话" type="number" placeholder="请输入客服电话" @change="tel" maxlength="20" v-model="telNalue" />
+      <i-input
+        right
+        title="客服电话"
+        type="number"
+        placeholder="请输入客服电话"
+        @change="tel"
+        maxlength="20"
+        v-model="telNalue"
+      />
       <div class="border1px"></div>
       <!-- <i-input right title="客服电话" placeholder="请输入客服电话" @change="tel" maxlength="20" />
       <div class="border1px"></div>-->
       <div class="fuwuDetail">
         <p>参团须知</p>
-        <textarea v-model="cantuanxuzhi"></textarea>
+        <!-- <textarea v-model="cantuanxuzhi"></textarea> -->
+        <editor
+          class="editor"
+          v-model="cantuanxuzhi"
+          showImgSize
+          showImgToolbar
+          showImgResize
+          @input="bcantuanxuzhi"
+        ></editor>
       </div>
       <van-popup :show="showStartTime" position="bottom" overlay="false" @close="onStartClose">
         <van-datetime-picker
@@ -126,14 +165,14 @@ export default {
     return {
       cantuanxuzhi: "",
       namePingTuan: "",
-      num: '',
+      num: "",
       address: "",
       telNalue: "",
       minDate1: new Date().getTime(),
-      maxDate: new Date(2019, 10, 1).getTime(),
-      currentDate1: "拼团开始时间", //用户选择的起始时间
+      maxDate: new Date().getTime() + 31536000000,
+      currentDate1: "点击选择时间", //用户选择的起始时间
       showStartTime: false, //是否显示开始时间选择框
-      currentDate2: "拼团结束时间", //用户选择的结束时间
+      currentDate2: "点击选择时间", //用户选择的结束时间
       showEndTime: false, //是否显示结束时间选择框,
       imgtop: "",
       imgfuwu: "",
@@ -144,29 +183,32 @@ export default {
       array: [1], //默认显示一个
       inputVal1: [""], //所有input的内容
       inputVal2: [""],
-      numJiSuan1:1,
-      numJiSuan2:1,
+      numJiSuan1: 1,
+      numJiSuan2: 1,
+      c1: NaN,
+      c2: NaN,
+      editorCtx: NaN
     };
   },
-  onLoad(){
-    this.cantuanxuzhi=''
-    this.namePingTuan=''
-    this.num=''
-    this.address=''
-    this.telNalue=''
-    this.currentDate1='拼团开始时间'
-    this.currentDate2='拼团结束时间'
-    this.imgtop=''
-    this.imgfuwu=''
-    this.shopname=''
-    this.info=''
-    this.topimgList=[]
-    this.fuwuimgList=[]
-    this.array=[1]
-    this.inputVal1=[""]
-    this.inputVal1=[""]
-    this.numJiSuan1=1
-    this.numJiSuan2=1
+  onLoad() {
+    this.cantuanxuzhi = "";
+    this.namePingTuan = "";
+    this.num = "";
+    this.address = "";
+    this.telNalue = "";
+    this.currentDate1 = "点击选择开始时间";
+    this.currentDate2 = "点击选择结束时间";
+    this.imgtop = "";
+    this.imgfuwu = "";
+    this.shopname = "";
+    this.info = "";
+    this.topimgList = [];
+    this.fuwuimgList = [];
+    this.array = [1];
+    this.inputVal1 = [""];
+    this.inputVal1 = [""];
+    this.numJiSuan1 = 1;
+    this.numJiSuan2 = 1;
   },
   methods: {
     name(e) {
@@ -316,6 +358,12 @@ export default {
         }
       });
     },
+    binfo(e) {
+      this.info = e.mp.detail.html;
+    },
+    bcantuanxuzhi(e) {
+      this.cantuanxuzhi = e.mp.detail.html;
+    },
     delrImgTop(id) {
       this.topimgList.splice(id, 1);
     },
@@ -338,11 +386,17 @@ export default {
         });
         return;
       }
-      if (
-        this.telNalue == ""
-      ) {
+      if (this.telNalue == "") {
         wx.showToast({
           title: "请全部填写",
+          icon: "none",
+          duration: 1000
+        });
+        return;
+      }
+      if (this.c1 > this.c2) {
+        wx.showToast({
+          title: "起始时间大于结束时间",
           icon: "none",
           duration: 1000
         });
@@ -354,7 +408,7 @@ export default {
           icon: "none",
           duration: 1000
         });
-        return false;
+        return;
       }
       var obj = {
         sid: wx.getStorageSync("sid"),
@@ -369,12 +423,11 @@ export default {
         info: this.info,
         service_tel: this.telNalue,
         directions: "",
-        num:'',
-        price_2:'',
-        price_3:'',
-        people_2:'',
-        people_3:'',
-
+        num: "",
+        price_2: "",
+        price_3: "",
+        people_2: "",
+        people_3: ""
       };
       for (var i = 0; i < this.inputVal1.length; i++) {
         if (this.inputVal1[i] == "") {
@@ -405,8 +458,8 @@ export default {
           icon: "none",
           duration: 1000
         });
-        if(response.data.code==400){
-          return
+        if (response.data.code == 400) {
+          return;
         }
         wx.navigateTo({
           url: "/pages/pingTuan/main"
@@ -425,10 +478,12 @@ export default {
     closeTimeChange(event) {
       this.showStartTime = false;
       this.currentDate1 = time.formatTime(event.mp.detail);
+      this.c1 = event.mp.detail;
     },
     closeTimeChange2(event) {
       this.showEndTime = false;
       this.currentDate2 = time.formatTime(event.mp.detail);
+      this.c2 = event.mp.detail;
     },
     // 更新用户开始时间选择
     // onInputStart(event) {
@@ -626,9 +681,10 @@ export default {
   margin-top: 14px;
   margin-bottom: 20px;
 }
-.fuwuDetail textarea {
-  width: 324px;
+.fuwuDetail .editor {
+  width: 345px;
   height: 87px;
+  min-height: 80px;
   padding: 6px 10px;
   font-size: 15px;
   border: 1px solid #cccccc;

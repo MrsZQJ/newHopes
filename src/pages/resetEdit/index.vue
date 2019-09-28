@@ -10,13 +10,13 @@
         v-model="namePingTuan"
       />
       <div class="border1px"></div>
-      <!-- <div class="changeTime" @click="startTime">
-      <span>拼团开始时间</span>
-      <span>{{currentDate1}}</span>
-      </div>-->
+      <div class="changeTime" @click="startTime">
+        <span @click="startTime">拼团开始时间</span>
+        <span>{{currentDate1}}</span>
+      </div>
       <div class="changeTime">
-        <!-- <span>拼团结束时间</span> -->
-        <span @click="startTime">{{currentDate1}}</span>
+        <span>拼团结束时间</span>
+        <!-- <span >{{currentDate1}}</span> -->
         <span @click="endTime">{{currentDate2}}</span>
       </div>
       <div class="border1px"></div>
@@ -67,7 +67,17 @@
       <div class="clear"></div>
       <div class="fuwuDetail">
         <p>服务详情</p>
-        <textarea placeholder="请输入服务详情" v-model="info"></textarea>
+        <!-- <textarea placeholder="请输入服务详情" v-model="info"></textarea> -->
+        <editor
+          id="editor1"
+          class="editor"
+          v-model="info"
+          placeholder="请输入服务详情"
+          showImgSize
+          showImgToolbar
+          showImgResize
+          @input="binfo"
+        ></editor>
         <div class="fuwuImg">
           <img src="../../../static/img/jh_img@2x.png" class="addImg" @click="fuwuimage" />
           <!-- <img class="imgfuwu" :src="fuwu" v-for="(fuwu,index) in fuwuimgList" :key="index" /> -->
@@ -115,7 +125,16 @@
       <div class="border1px"></div>-->
       <div class="fuwuDetail">
         <p>参团须知</p>
-        <textarea v-model="cantuanxuzhi"></textarea>
+        <!-- <textarea v-model="cantuanxuzhi"></textarea> -->
+        <editor
+          class="editor"
+          id="editor2"
+          v-model="cantuanxuzhi"
+          showImgSize
+          showImgToolbar
+          showImgResize
+          @input="bcantuanxuzhi"
+        ></editor>
       </div>
       <van-popup :show="showStartTime" position="bottom" overlay="false" @close="onStartClose">
         <van-datetime-picker
@@ -154,14 +173,14 @@ export default {
       address: "",
       telNalue: "",
       minDate1: new Date().getTime(),
-      maxDate: new Date(2019, 10, 1).getTime(),
-      currentDate1: "拼团开始时间", //用户选择的起始时间
+      maxDate: new Date().getTime() + 31536000000,
+      currentDate1: "点击选择开始时间", //用户选择的起始时间
       showStartTime: false, //是否显示开始时间选择框
-      currentDate2: "拼团结束时间", //用户选择的结束时间
+      currentDate2: "点击选择结束时间", //用户选择的结束时间
       showEndTime: false, //是否显示结束时间选择框,
       imgtop: "",
-      currentDate1a:NaN,
-      currentDate2a:NaN,
+      currentDate1a: NaN,
+      currentDate2a: NaN,
       imgfuwu: "",
       shopname: "",
       info: "",
@@ -172,7 +191,8 @@ export default {
       inputVal2: [""],
       numJiSuan1: 1,
       numJiSuan2: 1,
-      pid: NaN
+      pid: NaN,
+      editorCtx: NaN
     };
   },
   onLoad(options) {
@@ -185,10 +205,16 @@ export default {
       })
       .then(function(response) {
         that.namePingTuan = response.data.data.storeInfo.pname;
-        that.currentDate1a=(response.data.data.storeInfo.add_time)*1000
-        that.currentDate2a=(response.data.data.storeInfo.stop_time)*1000
-        that.currentDate1 = that.formatTime(response.data.data.storeInfo.add_time,'Y/M/D h:m:s');
-        that.currentDate2 = that.formatTime(response.data.data.storeInfo.stop_time,'Y/M/D h:m:s');
+        that.currentDate1a = response.data.data.storeInfo.add_time * 1000;
+        that.currentDate2a = response.data.data.storeInfo.stop_time * 1000;
+        that.currentDate1 = that.formatTime(
+          response.data.data.storeInfo.add_time,
+          "Y/M/D h:m:s"
+        );
+        that.currentDate2 = that.formatTime(
+          response.data.data.storeInfo.stop_time,
+          "Y/M/D h:m:s"
+        );
         that.array = [];
         that.inputVal1 = [];
         that.inputVal2 = [];
@@ -206,8 +232,44 @@ export default {
         that.address = response.data.data.storeInfo.address;
         that.telNalue = response.data.data.storeInfo.service_tel;
         that.cantuanxuzhi = response.data.data.storeInfo.notice;
+        wx
+          .createSelectorQuery()
+          .select("#editor1")
+          .context(function(res) {
+            that.editorCtx = res.context;
+            that.editorCtx.setContents({
+              html: that.info,
+              success: res => {
+                // console.log(res);
+              },
+              fail: res => {
+                console.log(res);
+              }
+            });
+          })
+          .exec();
+        wx
+          .createSelectorQuery()
+          .select("#editor2")
+          .context(function(res) {
+            that.editorCtx = res.context;
+            that.editorCtx.setContents({
+              html: that.cantuanxuzhi,
+              success: res => {
+                // console.log(res);
+              },
+              fail: res => {
+                console.log(res);
+              }
+            });
+          })
+          .exec();
       });
   },
+  // onEditorReady() {
+  //   var that = this;
+
+  // },
   methods: {
     formatTime(number, format) {
       var that = this;
@@ -378,6 +440,12 @@ export default {
         }
       });
     },
+    binfo(e) {
+      this.info = e.mp.detail.html;
+    },
+    bcantuanxuzhi(e) {
+      this.cantuanxuzhi = e.mp.detail.html;
+    },
     delrImgTop(id) {
       this.topimgList.splice(id, 1);
     },
@@ -418,7 +486,7 @@ export default {
       }
       var obj = {
         sid: wx.getStorageSync("sid"),
-        pid:this.pid,
+        pid: this.pid,
         pname: this.namePingTuan,
         address: that.address,
         add_time: this.currentDate1,
@@ -492,17 +560,17 @@ export default {
     },
     // 更新用户开始时间选择
     // onInputStart(event) {
-      // if (this.numJiSuan1 == 2) {
-      //   this.currentDate1 = time.formatTime(event.mp.detail);
-      // }
-      // this.numJiSuan1 += 1;
+    // if (this.numJiSuan1 == 2) {
+    //   this.currentDate1 = time.formatTime(event.mp.detail);
+    // }
+    // this.numJiSuan1 += 1;
     // },
     //更新用户结束时间选择
     // onInputEnd(event) {
-      // if (this.numJiSuan2 == 10) {
-      //   this.currentDate2 = time.formatTime(event.mp.detail);
-      // }
-      // this.numJiSuan2 += 1;
+    // if (this.numJiSuan2 == 10) {
+    //   this.currentDate2 = time.formatTime(event.mp.detail);
+    // }
+    // this.numJiSuan2 += 1;
     // },
     //点击遮罩层关闭开始时间选择框
     onStartClose(e) {
@@ -684,9 +752,10 @@ export default {
   margin-top: 14px;
   margin-bottom: 20px;
 }
-.fuwuDetail textarea {
-  width: 324px;
+.fuwuDetail .editor {
+  width: 345px;
   height: 87px;
+  min-height: 80px;
   padding: 6px 10px;
   font-size: 15px;
   border: 1px solid #cccccc;

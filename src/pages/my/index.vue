@@ -12,13 +12,13 @@
         </navigator>
       </div>
       <div class="box">
-        <navigator url="/pages/tixianDetail/main?tixian=0">
+        <navigator :url="'/pages/tixianDetail/main?tixian=0&name='+name">
           <p>{{extracting}}</p>
           <span>提现中(笔)</span>
         </navigator>
       </div>
       <div class="box">
-        <navigator url="/pages/tixianDetail/main?tixian=2">
+        <navigator :url="'/pages/tixianDetail/main?tixian=2&name='+name">
           <p>{{extracted}}</p>
           <span>提现成功</span>
         </navigator>

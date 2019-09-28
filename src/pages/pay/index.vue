@@ -1,7 +1,7 @@
 <template>
   <div id="body">
     <div class="Commodity_Information">
-      <img src="../../../static/img/jihui.png" alt="">
+      <img src="../../../static/img/jihui.png" alt />
       <div class="CommodityText">
         <p>{{pname}}</p>
         <p></p>
@@ -37,10 +37,17 @@
     <div class="pay_footer">
       <div class="footerLeft">
         <p>
-          <span><span style="color:#333333;">付款</span>¥{{price}}</span>
+          <span>
+            <span style="color:#333333;">付款</span>
+            ¥{{price}}
+          </span>
         </p>
       </div>
-      <div class="footerRight" @click="paySuccess" :style="{backgroundColor:changColor +'!important'}">立即支付</div>
+      <div
+        class="footerRight"
+        @click="paySuccess"
+        :style="{backgroundColor:changColor +'!important'}"
+      >立即支付</div>
     </div>
   </div>
 </template>
@@ -55,11 +62,13 @@ export default {
       sid: 0,
       price: 0,
       pname: "",
-      changColor:'#0086f8',
-      people:NaN
+      changColor: "#0086f8",
+      people: NaN
     };
   },
   onLoad(options) {
+    this.realName=''
+    this.phone=''
     this.price = options.price;
     this.sid = options.storeid;
     this.pname = options.pname;
@@ -71,7 +80,7 @@ export default {
         cartNum: 1,
         productId: options.productid,
         price: that.price,
-        people:that.people
+        people: that.people
       })
       .then(function(response) {
         if (response.data.code == 400) {
@@ -80,10 +89,10 @@ export default {
             icon: "none",
             duration: 1000
           });
-          that.changColor='#cccccc'
+          that.changColor = "#cccccc";
           return;
         }
-        that.changColor='#0086f8'        
+        that.changColor = "#0086f8";
         that.cartId = response.data.data.cartId;
       });
   },
@@ -98,11 +107,19 @@ export default {
     tel(e) {
       this.phone = e.target.detail.value;
     },
-    paySuccess() {      
-      if(this.changColor=='#cccccc'){
-        return false
+    paySuccess() {
+      if (this.changColor == "#cccccc") {
+        return false;
       }
       var that = this;
+      if (!/^1[3456789]\d{9}$/.test(this.phone)) {
+        wx.showToast({
+          title: "手机号码有误，请重填",
+          icon: "none",
+          duration: 1000
+        });
+        return;
+      }
       if (this.realName == "" || this.phone == undefined) {
         wx.showToast({
           title: "请全部输入",
